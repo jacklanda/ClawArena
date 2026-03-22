@@ -16,9 +16,11 @@ class AdapterRegistry:
     def _discover_builtins(self) -> None:
         from clawarena.adapters.builtin.dummy import DummyAdapter
         from clawarena.adapters.builtin.subprocess_adapter import SubprocessAdapter
+        from clawarena.adapters.builtin.openclaw_adapter import OpenClawAdapter
 
         self._adapters["dummy"] = DummyAdapter
         self._adapters["subprocess"] = SubprocessAdapter
+        self._adapters["openclaw"] = OpenClawAdapter
 
     def discover_plugins(self) -> None:
         for ep in importlib.metadata.entry_points(group=ENTRY_POINT_GROUP):

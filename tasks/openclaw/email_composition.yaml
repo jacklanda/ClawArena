@@ -1,0 +1,59 @@
+# OpenClaw Email Composition Task
+# This task tests an OpenClaw agent's ability to compose professional emails
+# based on given context and requirements.
+
+id: openclaw_email_composition
+name: "OpenClaw Email Composition"
+category: email
+difficulty: medium
+description: "Professional email composition with context awareness"
+execution_mode: sandboxed
+timeout_seconds: 300
+
+instruction: |
+  Compose a professional email to a colleague requesting feedback on a project proposal.
+  The email should:
+  1. Briefly describe the project (AI benchmarking framework)
+  2. Request specific feedback on the technical architecture
+  3. Suggest a meeting time next week
+  4. Use a polite and collaborative tone
+  
+  Format the email properly with subject, greeting, body, and closing.
+
+context:
+  recipient: "tech.review@company.com"
+  project_name: "ClawArena AI Benchmarking Framework"
+  project_description: "A Python framework for evaluating AI agents on real-world tasks with multi-dimensional scoring"
+  deadline: "Next Friday"
+  available_times: ["Monday 2-4 PM", "Wednesday 10-12 AM", "Thursday 3-5 PM"]
+
+expected_output: |
+  A properly formatted email with:
+  - Clear subject line
+  - Professional greeting
+  - Concise project description
+  - Specific feedback request
+  - Meeting time suggestions
+  - Polite closing
+
+evaluation:
+  evaluator: rubric
+  criteria:
+    - name: format
+      weight: 0.2
+      description: "Email is properly formatted with all required sections"
+    - name: clarity
+      weight: 0.3
+      description: "Project description and request are clear and concise"
+    - name: professionalism
+      weight: 0.25
+      description: "Tone is professional, polite, and collaborative"
+    - name: completeness
+      weight: 0.25
+      description: "All requested elements are included (description, feedback request, meeting times)"
+
+metadata:
+  tags: ["openclaw", "email", "professional", "communication"]
+  created: "2024-03-22"
+  author: "ClawArena Team"
+  target_agents: ["openclaw", "claude", "gpt", "gemini"]

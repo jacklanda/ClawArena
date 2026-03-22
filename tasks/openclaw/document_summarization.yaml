@@ -1,0 +1,118 @@
+# OpenClaw Document Summarization Task
+# This task tests an OpenClaw agent's ability to summarize technical documentation
+# while preserving key information and maintaining readability.
+
+id: openclaw_document_summarization
+name: "OpenClaw Document Summarization"
+category: summarization
+difficulty: medium
+description: "Technical documentation summarization with clarity and structure"
+execution_mode: sandboxed
+timeout_seconds: 350
+
+instruction: |
+  Summarize the following technical documentation about ClawArena framework.
+  Your summary should:
+  
+  1. Capture the main purpose and key features
+  2. Highlight the architecture components
+  3. Explain the evaluation methodology
+  4. Mention any limitations or future plans
+  5. Keep the summary concise (200-300 words)
+  6. Use clear, non-technical language where possible
+  
+  Structure your summary with clear sections.
+
+context:
+  documentation: |
+    # ClawArena Framework Documentation
+    
+    ## Overview
+    ClawArena is a Python-based benchmarking framework designed for evaluating
+    AI agent systems on real-world tasks. It provides a standardized platform
+    for comparing agent performance across multiple dimensions including
+    correctness, efficiency, robustness, and cost-effectiveness.
+    
+    ## Key Features
+    - **Plugin Architecture**: Supports custom agents, evaluators, and tasks
+    - **Multi-dimensional Scoring**: Evaluates agents on correctness (40%),
+      completeness (25%), efficiency (20%), and robustness (15%)
+    - **Cost Estimation**: Automatically calculates USD costs based on token usage
+    - **Sandboxed Execution**: Each task runs in isolated environments
+    - **Leaderboard Generation**: Ranks agents by score, cost, and speed
+    
+    ## Architecture
+    The framework consists of several core components:
+    
+    1. **Task System**: YAML-based task definitions with validation
+    2. **Agent Adapters**: Interface for connecting external agent systems
+    3. **Evaluators**: Multiple evaluation methods (exact match, rubric, LLM judge)
+    4. **Execution Engine**: Orchestrates task execution and result collection
+    5. **Storage Backend**: Persists results in JSON format with indexing
+    
+    ## Evaluation Methodology
+    Agents are evaluated using a combination of automated and human-like assessment:
+    - **Exact Match**: String comparison with sequence matching
+    - **Rubric Scoring**: Criterion-based evaluation with keyword detection
+    - **LLM Judge**: Uses AI models to score responses (with fallback)
+    - **Composite Evaluation**: Combines multiple evaluators for balanced scoring
+    
+    ## Built-in Tasks
+    The framework includes 10 pre-defined tasks across four categories:
+    - Email composition and response
+    - Meeting notes and document summarization
+    - Multi-step cascade tasks
+    - General file organization and planning
+    
+    ## Limitations
+    - Currently supports single-turn tasks only (multi-turn in development)
+    - Limited to text-based tasks (multimedia support planned)
+    - Requires manual task definition (auto-generation in roadmap)
+    
+    ## Roadmap
+    Future versions will include:
+    - Multi-turn conversation support
+    - Custom evaluator plugins via entry points
+    - Distributed execution for scalability
+    - Web dashboard for interactive exploration
+    - Community task contribution pipeline
+
+  summary_requirements:
+    - "Focus on practical applications"
+    - "Highlight what makes ClawArena unique"
+    - "Explain who would benefit from using it"
+    - "Keep technical details accessible"
+
+expected_output: |
+  A well-structured summary containing:
+  - Clear introduction of ClawArena's purpose
+  - Overview of key features and architecture
+  - Explanation of evaluation methodology
+  - Discussion of limitations and future plans
+  - Appropriate length (200-300 words)
+  - Clear section organization
+
+evaluation:
+  evaluator: rubric
+  criteria:
+    - name: content_coverage
+      weight: 0.3
+      description: "Covers all key aspects of the documentation"
+    - name: clarity
+      weight: 0.25
+      description: "Uses clear, accessible language appropriate for the audience"
+    - name: structure
+      weight: 0.2
+      description: "Well-organized with clear sections and logical flow"
+    - name: conciseness
+      weight: 0.15
+      description: "Appropriate length without unnecessary details"
+    - name: accuracy
+      weight: 0.1
+      description: "Accurately represents the original documentation"
+
+metadata:
+  tags: ["openclaw", "summarization", "technical", "documentation"]
+  created: "2024-03-22"
+  author: "ClawArena Team"
+  target_agents: ["openclaw", "claude", "gpt-4", "gemini"]

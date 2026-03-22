@@ -1,0 +1,129 @@
+# Currency Analysis Task
+# This task tests an OpenClaw agent's ability to perform complex real-world data analysis:
+# 1. Web scraping for currency exchange rates
+# 2. Data processing and Excel file creation
+# 3. Financial analysis with current events context
+# 4. Desktop file management
+
+id: openclaw_currency_analysis
+name: "Currency Exchange Rate Analysis"
+category: general
+difficulty: hard
+description: "Comprehensive currency exchange rate analysis with Excel output and future predictions"
+execution_mode: sandboxed
+timeout_seconds: 600
+
+instruction: |
+  Perform a comprehensive currency exchange rate analysis with the following steps:
+  
+  **Step 1: Data Collection**
+  - Identify the world's top 10 most traded currencies (excluding CNY)
+  - Scrape or fetch their current exchange rates against Chinese Yuan (CNY)
+  - Include both buying and selling rates if available
+  - Capture the data collection timestamp
+  
+  **Step 2: Data Processing**
+  - Create an Excel spreadsheet with the following columns:
+    1. Currency Code (e.g., USD, EUR, JPY)
+    2. Currency Name (e.g., US Dollar, Euro, Japanese Yen)
+    3. Current Buying Rate (CNY per foreign currency)
+    4. Current Selling Rate (CNY per foreign currency)
+    5. Data Source
+    6. Last Updated Timestamp
+  - Format the spreadsheet professionally with:
+    - Appropriate column widths
+    - Currency formatting
+    - Header styling
+    - Timestamp formatting
+  
+  **Step 3: Analysis and Prediction**
+  - For each currency pair, analyze the historical trend (last 3 months)
+  - Based on current global events, predict the exchange rate trend for the next 3 months
+  - Consider factors such as:
+    * Central bank policies (Fed, ECB, BOJ, etc.)
+    * Geopolitical events
+    * Economic indicators (inflation, GDP, employment)
+    * Trade relations with China
+    * Market sentiment
+  - Provide a confidence level for each prediction (High/Medium/Low)
+  
+  **Step 4: Report Generation**
+  - Create a summary report in the Excel file with:
+    1. Executive summary of findings
+    2. Top 3 currencies expected to appreciate against CNY
+    3. Top 3 currencies expected to depreciate against CNY
+    4. Key risk factors to monitor
+    5. Investment recommendations (if any)
+  
+  **Step 5: File Management**
+  - Save the Excel file to the Desktop with filename: "Currency_Analysis_YYYYMMDD.xlsx"
+  - Ensure proper file organization
+  - Verify the file was created successfully
+
+context:
+  target_currencies_suggestion: ["USD", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "HKD", "SGD", "KRW"]
+  data_sources_suggestion:
+    - "XE.com - Real-time exchange rates"
+    - "Bloomberg - Financial data"
+    - "Reuters - Market news"
+    - "People's Bank of China - Official rates"
+  current_events_context: |
+    As of March 2024, consider these factors:
+    1. US Federal Reserve's interest rate policy
+    2. European Central Bank's monetary stance
+    3. Japan's monetary policy and yen weakness
+    4. UK economic outlook post-Brexit
+    5. Australia-China trade relations
+    6. Canada's commodity exports
+    7. Swiss franc as safe haven
+    8. Hong Kong dollar peg to USD
+    9. Singapore's monetary policy
+    10. South Korea's export economy
+  analysis_requirements:
+    - "Use credible data sources"
+    - "Cite specific events and their expected impact"
+    - "Provide quantitative estimates where possible"
+    - "Acknowledge uncertainty in predictions"
+    - "Focus on China's economic perspective"
+
+expected_output: |
+  A comprehensive Excel file containing:
+  1. **Data Sheet**: Current exchange rates for top 10 currencies
+  2. **Analysis Sheet**: 3-month trend analysis and predictions
+  3. **Report Sheet**: Executive summary and recommendations
+  
+  The analysis should include:
+  - Clear methodology description
+  - Data source citations
+  - Current event analysis
+  - Quantitative predictions with confidence levels
+  - Risk assessment
+  - Practical recommendations
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: data_completeness
+        description: "All 10 currency pairs with complete rate information"
+        weight: 0.25
+      - name: data_accuracy
+        description: "Realistic exchange rates from credible sources"
+        weight: 0.20
+      - name: analysis_depth
+        description: "Comprehensive analysis considering multiple factors"
+        weight: 0.25
+      - name: current_events_integration
+        description: "Effective integration of current global events"
+        weight: 0.15
+      - name: file_creation
+        description: "Proper Excel file created and saved to Desktop"
+        weight: 0.15
+
+metadata:
+  tags: ["openclaw", "finance", "data_analysis", "excel", "currency", "real_world"]
+  created: "2024-03-22"
+  author: "ClawArena Team"
+  target_agents: ["openclaw", "claude", "gpt-4", "gemini"]
+  estimated_duration: "5-10 minutes"
+  complexity: "High - requires web access, data processing, and financial analysis"

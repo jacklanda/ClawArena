@@ -1,0 +1,94 @@
+# OpenClaw Code Review Task
+# This task tests an OpenClaw agent's ability to review and improve Python code
+# based on best practices and specific requirements.
+
+id: openclaw_code_review
+name: "OpenClaw Code Review"
+category: general
+difficulty: hard
+description: "Python code review and improvement suggestions with best practices"
+execution_mode: sandboxed
+timeout_seconds: 400
+
+instruction: |
+  Review the following Python code and provide specific improvements:
+  
+  1. Identify any bugs or potential issues
+  2. Suggest performance optimizations
+  3. Improve code readability and maintainability
+  4. Add type hints where appropriate
+  5. Suggest better error handling
+  
+  Provide your review as a structured response with clear sections.
+
+context:
+  code: |
+    def process_data(data_list):
+        result = []
+        for item in data_list:
+            if item % 2 == 0:
+                result.append(item * 2)
+            else:
+                result.append(item * 3)
+        return result
+    
+    def find_duplicates(items):
+        seen = []
+        duplicates = []
+        for item in items:
+            if item in seen:
+                duplicates.append(item)
+            else:
+                seen.append(item)
+        return duplicates
+    
+    class DataProcessor:
+        def __init__(self, config):
+            self.config = config
+        
+        def run(self, data):
+            processed = []
+            for d in data:
+                try:
+                    val = int(d)
+                    processed.append(val)
+                except:
+                    processed.append(0)
+            return processed
+
+  requirements:
+    - "Handle edge cases (empty lists, None values)"
+    - "Use efficient data structures"
+    - "Follow PEP 8 style guide"
+    - "Add docstrings for functions"
+    - "Consider using list comprehensions where appropriate"
+
+expected_output: |
+  A structured code review containing:
+  - Summary of issues found
+  - Specific improvements for each function/class
+  - Code examples for suggested changes
+  - Explanation of why changes improve the code
+  - Any additional best practice recommendations
+
+evaluation:
+  evaluator: rubric
+  criteria:
+    - name: bug_identification
+      weight: 0.3
+      description: "Correctly identifies bugs and potential issues"
+    - name: optimization_suggestions
+      weight: 0.25
+      description: "Provides meaningful performance optimizations"
+    - name: code_quality
+      weight: 0.25
+      description: "Improves code readability, maintainability, and style"
+    - name: completeness
+      weight: 0.2
+      description: "Covers all requested aspects of the review"
+
+metadata:
+  tags: ["openclaw", "code_review", "python", "best_practices"]
+  created: "2024-03-22"
+  author: "ClawArena Team"
+  target_agents: ["openclaw", "claude-code", "gpt-4", "codex"]

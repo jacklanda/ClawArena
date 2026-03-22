@@ -16,6 +16,13 @@ ClawArena is a Python framework for running AI agents against standardized task 
 - **Cost Estimation** -- Automatic USD cost calculation from token usage, with built-in pricing for Anthropic, OpenAI, Google, and Meta models
 - **Leaderboard Generation** -- Ranked agent comparison sorted by score, cost, or speed
 
+### OpenClaw Integration 🦞
+
+- **OpenClaw Agent Adapter** -- Native support for testing OpenClaw agents (lobsters) on real-world tasks
+- **Specialized Task Suite** -- Pre-defined tasks optimized for OpenClaw agent evaluation
+- **Sandboxed Execution** -- Isolated task execution with proper workspace management
+- **Comprehensive Metrics** -- Detailed performance analytics for OpenClaw agents
+
 ### Task System
 
 - **YAML Task Definitions** -- Declarative task specs validated with Pydantic
@@ -37,6 +44,7 @@ ClawArena is a Python framework for running AI agents against standardized task 
 
 - **Dummy Adapter** -- Returns canned responses for framework testing
 - **Subprocess Adapter** -- Runs external agents as subprocesses with command templates (`{instruction}`, `{context_file}`, `{task_id}`)
+- **OpenClaw Adapter** -- Integrates with OpenClaw agents for real-world task evaluation 🦞
 - **Plugin Discovery** -- Third-party adapters discovered via Python entry points
 
 ### Execution Engine
@@ -90,6 +98,9 @@ clawarena run --agent dummy
 # Run against a specific category
 clawarena run --agent dummy --category email
 
+# Run OpenClaw agent tests 🦞
+clawarena run --agent openclaw --agent-id claude --category openclaw
+
 # View results
 clawarena results list
 clawarena leaderboard
@@ -102,13 +113,14 @@ src/clawarena/
   core/           # Data models -- Task, AgentAdapter, Evaluator, Result, Scoring
   tasks/          # YAML loader, registry, and 10 built-in task definitions
   evaluators/     # Exact match, rubric, LLM judge, and composite evaluators
-  adapters/       # Adapter registry, dummy, and subprocess adapters
+  adapters/       # Adapter registry, dummy, subprocess, and OpenClaw adapters 🦞
   engine/         # Run engine, pricing table, and sandbox isolation
   storage/        # Abstract backend and JSON file store
   reporting/      # Rich table rendering and leaderboard display
   cli.py          # Click-based CLI entry point
 tests/            # Unit tests across all modules
 tasks/examples/   # Example task YAML for reference
+tasks/openclaw/   # OpenClaw-specific task definitions 🦞
 ```
 
 ## Roadmap
@@ -148,6 +160,64 @@ tasks/examples/   # Example task YAML for reference
 - [ ] CI integration helpers (GitHub Actions, etc.)
 - [ ] Stable public API with semantic versioning guarantees
 - [ ] Comprehensive documentation site
+
+## OpenClaw Integration 🦞
+
+ClawArena includes native support for testing OpenClaw agents (lobsters) on real-world tasks. This integration allows you to evaluate any OpenClaw agent within the standardized benchmarking framework.
+
+### Key Features
+
+- **OpenClaw Agent Adapter**: Seamless integration with OpenClaw's agent execution system
+- **Specialized Task Suite**: Pre-defined tasks optimized for OpenClaw agent evaluation
+- **Sandboxed Execution**: Isolated task execution with proper workspace management
+- **Comprehensive Metrics**: Detailed performance analytics for OpenClaw agents
+
+### Getting Started with OpenClaw
+
+1. **Install OpenClaw**: Ensure OpenClaw is installed and in your PATH
+2. **Run OpenClaw Tests**:
+   ```bash
+   # Test Claude agent on OpenClaw tasks
+   clawarena run --agent openclaw --agent-id claude --category openclaw
+   
+   # Test GPT-4 agent on specific task
+   clawarena run --agent openclaw --agent-id gpt-4 --task openclaw_email_composition
+   
+   # Compare multiple agents
+   clawarena run --agent openclaw --agent-id claude --agent openclaw --agent-id gpt-4 --agent dummy
+   ```
+
+3. **View Results**:
+   ```bash
+   clawarena leaderboard
+   clawarena results list
+   ```
+
+### Available OpenClaw Tasks
+
+- **Email Composition**: Professional email writing with context awareness
+- **Code Review**: Python code analysis and improvement suggestions
+- **Document Summarization**: Technical documentation summarization
+
+For detailed documentation, see [OPENCLAW_INTEGRATION.md](docs/OPENCLAW_INTEGRATION.md).
+
+## Project Structure
+
+The project has been organized with a clear directory structure:
+
+```
+ClawArena/
+├── src/                          # Source code
+├── tasks/                        # Task definitions (YAML)
+├── tests/                        # Test files
+│   ├── openclaw/                 # OpenClaw integration tests
+│   └── debug/                    # Debug scripts
+├── docs/                         # Documentation
+├── scripts/                      # Utility scripts
+└── results/                      # Test results
+```
+
+For complete directory structure details, see [DIRECTORY_STRUCTURE.md](DIRECTORY_STRUCTURE.md).
 
 ## License
 
