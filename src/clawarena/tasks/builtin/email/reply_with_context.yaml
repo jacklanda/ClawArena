@@ -1,0 +1,92 @@
+id: email.reply_with_context
+name: Reply to an Email Thread with Context
+category: email
+difficulty: medium
+description: >
+  Given an ongoing email thread with multiple messages, compose a reply
+  that maintains conversational context, answers all outstanding questions,
+  and moves the discussion forward.
+
+instruction: |
+  Read the email thread provided in the context and compose a reply from
+  the perspective of the sender specified.  Your reply must:
+  1. Acknowledge the points raised in the most recent message.
+  2. Answer every explicit question posed in the thread that is directed
+     at you (the sender).
+  3. Provide any requested information or clearly state when you will
+     follow up.
+  4. Maintain a professional and collaborative tone.
+  5. Keep the reply focused — do not re-summarize the entire thread, just
+     address what is needed to move forward.
+
+context:
+  sender_name: "Priya Sharma"
+  sender_role: "Engineering Lead"
+  thread:
+    - from: "Marcus Thompson"
+      role: "QA Lead"
+      timestamp: "2025-03-18T09:14:00Z"
+      body: |
+        Hi team,
+
+        We've finished the regression test suite for v2.4. Out of 342 test
+        cases, 12 are failing. 8 failures are in the payments module and
+        4 are in the notification service. I've attached the full report.
+
+        @Priya — can you confirm whether the payments refactor in PR #1187
+        is expected to break the existing charge-capture flow? Also, do
+        we have an ETA on the notification service fix from last sprint?
+
+        We need to decide by Thursday whether we ship v2.4 as-is with known
+        issues or delay by a week.
+
+        Thanks,
+        Marcus
+
+    - from: "Dana Lee"
+      role: "Product Manager"
+      timestamp: "2025-03-18T10:02:00Z"
+      body: |
+        Thanks for the update, Marcus.
+
+        From the product side, the payments module failures are a blocker —
+        we can't ship with broken charge-capture.  The notification issues
+        are lower severity and could ship with a known-issues note if needed.
+
+        @Priya — what's the realistic fix timeline for the payments issues?
+        If it's more than 2 days of work, I'd lean toward delaying the release.
+
+        Dana
+
+  questions_directed_at_sender:
+    - "Is the payments refactor in PR #1187 expected to break the existing charge-capture flow?"
+    - "What is the ETA on the notification service fix from last sprint?"
+    - "What is the realistic fix timeline for the payments issues?"
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: question_coverage
+        description: "All three questions directed at the sender are clearly answered or addressed"
+        weight: 4
+      - name: context_awareness
+        description: "Reply demonstrates understanding of the thread context, referencing specific details like PR #1187, the 12 failing tests, and the Thursday deadline"
+        weight: 3
+      - name: actionable_content
+        description: "Reply contains concrete next steps, timelines, or commitments rather than vague responses"
+        weight: 3
+      - name: tone_and_format
+        description: "Professional tone appropriate for cross-functional communication; well-structured and easy to scan"
+        weight: 2
+      - name: brevity
+        description: "Reply stays focused on what is needed without unnecessarily re-summarizing the entire thread"
+        weight: 1
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["email", "writing", "context-tracking", "professional"]
+  version: "1.0"

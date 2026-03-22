@@ -1,0 +1,116 @@
+id: summarization.daily_standup
+name: Generate Daily Work Summary from Multiple Sources
+category: summarization
+difficulty: medium
+description: >
+  Synthesize a daily work summary suitable for a standup or async status
+  update by combining information from git commits, ticket updates, and
+  Slack messages.
+
+instruction: |
+  You are generating a daily standup summary for the person specified in
+  the context.  Using the provided git commits, Jira ticket updates, and
+  Slack messages, produce a summary with the following sections:
+
+  1. **What I did yesterday** — synthesize the commits, ticket transitions,
+     and messages into 3-5 concise bullet points describing completed work.
+  2. **What I'm doing today** — based on ticket states, mentioned plans,
+     and any upcoming deadlines, list 2-4 planned items for today.
+  3. **Blockers** — list any blockers, dependencies on others, or risks
+     mentioned in the data.  If there are none, state "No blockers."
+
+  Rules:
+  - Combine related commits and tickets into single coherent bullet points
+    rather than listing every commit individually.
+  - Use plain language, not commit hashes or ticket IDs alone — include
+    brief human-readable descriptions.
+  - Prioritize the most impactful work items.
+
+context:
+  person: "Jamie Reyes"
+  date: "2025-03-19"
+  previous_day: "2025-03-18"
+  git_commits:
+    - hash: "a3f7c91"
+      message: "fix: resolve null pointer in PaymentProcessor.refund()"
+      timestamp: "2025-03-18T09:42:00Z"
+      files_changed: ["src/payments/processor.py", "tests/payments/test_processor.py"]
+    - hash: "b8e2d04"
+      message: "fix: add retry logic for transient Stripe API failures"
+      timestamp: "2025-03-18T11:15:00Z"
+      files_changed: ["src/payments/stripe_client.py", "src/payments/retry.py"]
+    - hash: "c1f9a38"
+      message: "test: add integration tests for refund edge cases"
+      timestamp: "2025-03-18T14:30:00Z"
+      files_changed: ["tests/payments/test_refund_integration.py"]
+    - hash: "d4b6e72"
+      message: "chore: update Stripe SDK to v8.1.0"
+      timestamp: "2025-03-18T15:50:00Z"
+      files_changed: ["requirements.txt", "src/payments/stripe_client.py"]
+    - hash: "e5a2f19"
+      message: "docs: update payment error handling runbook"
+      timestamp: "2025-03-18T16:20:00Z"
+      files_changed: ["docs/runbooks/payment-errors.md"]
+  jira_tickets:
+    - key: "PAY-312"
+      title: "Refund processing fails on partial amounts"
+      status_from: "In Progress"
+      status_to: "In Review"
+      assignee: "Jamie Reyes"
+    - key: "PAY-318"
+      title: "Add retry mechanism for payment gateway timeouts"
+      status_from: "To Do"
+      status_to: "In Progress"
+      assignee: "Jamie Reyes"
+    - key: "PAY-320"
+      title: "Migrate to Stripe SDK v8 for PCI compliance"
+      status_from: "In Progress"
+      status_to: "Done"
+      assignee: "Jamie Reyes"
+    - key: "PAY-325"
+      title: "Investigate elevated 502 errors on /api/checkout"
+      status_from: "To Do"
+      status_to: "To Do"
+      assignee: "Jamie Reyes"
+      note: "Scheduled for 2025-03-19"
+  slack_messages:
+    - channel: "#payments-team"
+      timestamp: "2025-03-18T10:05:00Z"
+      text: "Heads up — the refund null pointer fix is on staging now. @QA can you smoke test when you get a chance?"
+    - channel: "#payments-team"
+      timestamp: "2025-03-18T13:00:00Z"
+      text: "Stripe SDK v8 migration is done. No breaking changes in our usage, just needed to update the auth initialization."
+    - channel: "#payments-team"
+      timestamp: "2025-03-18T16:45:00Z"
+      text: "PAY-312 is ready for review. Added integration tests for the partial refund edge cases. @maria can you review the PR?"
+    - channel: "#incidents"
+      timestamp: "2025-03-18T17:30:00Z"
+      text: "Seeing a small uptick in 502s on checkout. Not critical yet but I'll investigate tomorrow morning. Might be related to the LB config change from infra."
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: yesterday_completeness
+        description: "Yesterday section covers the major work areas: refund bug fix, Stripe retry logic, SDK migration, integration tests, and runbook update — synthesized into coherent bullets, not raw commit dumps"
+        weight: 3
+      - name: today_plan
+        description: "Today section includes investigating the 502 errors (PAY-325) and continuing work on PAY-318 retry mechanism, based on data signals"
+        weight: 3
+      - name: blockers
+        description: "Blockers section mentions the dependency on the PR review from Maria and/or the potential LB config issue from infra team"
+        weight: 2
+      - name: synthesis_quality
+        description: "Related items are grouped together (e.g., refund fix + refund tests + PR review request) rather than listed as separate raw data points"
+        weight: 3
+      - name: human_readable
+        description: "Summary uses plain language, not just commit hashes or ticket IDs; readable by someone unfamiliar with the codebase"
+        weight: 2
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["summarization", "standup", "multi-source", "synthesis"]
+  version: "1.0"

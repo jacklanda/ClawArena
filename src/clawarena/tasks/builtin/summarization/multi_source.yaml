@@ -1,0 +1,156 @@
+id: summarization.multi_source
+name: Multi-Source Executive Summary
+category: summarization
+difficulty: hard
+description: >
+  Synthesize information from multiple disparate documents — a quarterly
+  revenue report, customer churn analysis, and product roadmap update —
+  into a coherent executive summary suitable for a board meeting.
+
+instruction: |
+  You are preparing a one-page executive summary for the board of
+  directors of a mid-stage SaaS company.  Using the three source
+  documents provided in the context, produce a structured executive
+  summary with the following sections:
+
+  1. **Business Overview** (1 paragraph) — high-level state of the
+     business combining revenue, customer, and product signals.
+  2. **Financial Highlights** — 3-4 bullet points on revenue performance,
+     trends, and notable changes.
+  3. **Customer Health** — 3-4 bullet points on retention, churn drivers,
+     and NPS trends.
+  4. **Product & Engineering** — 3-4 bullet points on key shipped features,
+     upcoming milestones, and technical debt.
+  5. **Risks & Mitigations** — 2-3 bullet points identifying the most
+     critical risks across all three areas and proposed mitigations.
+  6. **Recommended Board Discussion Topics** — 2-3 topics the board
+     should discuss based on the data.
+
+  Rules:
+  - Cross-reference data across documents.  For example, if churn is
+    rising in a segment that the roadmap is not addressing, flag it.
+  - Use specific numbers from the source data.
+  - Do not exceed 600 words total.
+  - Maintain an objective, executive tone.
+
+context:
+  revenue_report:
+    title: "Q1 2025 Revenue Report"
+    period: "January - March 2025"
+    data:
+      total_arr: "$18.4M"
+      arr_growth_qoq: "8.2%"
+      arr_growth_yoy: "42%"
+      new_arr_added: "$2.1M"
+      churned_arr: "$0.7M"
+      net_new_arr: "$1.4M"
+      gross_margin: "78%"
+      avg_contract_value: "$24,500"
+      acv_change_yoy: "+18%"
+      revenue_by_segment:
+        enterprise: "$9.2M (50%)"
+        mid_market: "$5.5M (30%)"
+        smb: "$3.7M (20%)"
+      notable_deals:
+        - "Closed GlobalBank ($380K ACV) — largest deal to date"
+        - "Expanded Meridian Health from $85K to $210K ACV"
+        - "Lost TechCorp ($120K ACV) to competitor — cited missing API features"
+
+  churn_analysis:
+    title: "Q1 2025 Customer Churn Analysis"
+    data:
+      gross_churn_rate: "4.2%"
+      net_revenue_retention: "112%"
+      churn_by_segment:
+        enterprise: "1.1% (stable)"
+        mid_market: "3.8% (up from 2.9% in Q4)"
+        smb: "8.7% (up from 7.1% in Q4)"
+      top_churn_reasons:
+        - reason: "Lack of API/integration capabilities"
+          percentage: "34%"
+          affected_segment: "mid-market and enterprise"
+        - reason: "Price sensitivity after renewal increase"
+          percentage: "28%"
+          affected_segment: "SMB"
+        - reason: "Switched to competitor with better reporting"
+          percentage: "22%"
+          affected_segment: "mid-market"
+        - reason: "Company went out of business"
+          percentage: "16%"
+          affected_segment: "SMB"
+      nps_score: 38
+      nps_trend: "down from 44 in Q4 2024"
+      nps_detractor_themes:
+        - "Slow API response times"
+        - "Limited reporting customization"
+        - "Onboarding complexity for mid-market teams"
+
+  product_roadmap:
+    title: "Product & Engineering Q1 Update and Q2 Plan"
+    data:
+      q1_shipped:
+        - "New REST API v2 with rate limiting and webhook support"
+        - "Self-service SSO configuration for enterprise"
+        - "Revamped dashboard with 12 new chart types"
+        - "Mobile app v1.0 (iOS only)"
+      q2_planned:
+        - "API v2 GraphQL layer (April)"
+        - "Custom report builder (May)"
+        - "Android mobile app (June)"
+        - "Onboarding wizard redesign (April)"
+      tech_debt:
+        - "Legacy billing system migration — 60% complete, targeting Q2 end"
+        - "Test coverage at 64%, goal is 80% by EOY"
+        - "Monolith decomposition: 3 of 8 services extracted"
+      team:
+        engineering_headcount: 34
+        open_roles: 6
+        attrition_q1: "2 senior engineers departed"
+
+expected_output: null
+
+evaluation:
+  evaluator: composite
+  config:
+    evaluators:
+      - evaluator: rubric
+        weight: 6
+        config:
+          criteria:
+            - name: cross_referencing
+              description: "Summary cross-references data across documents, e.g., linking the 34% churn reason (API issues) to the shipped API v2 and planned GraphQL layer, or the TechCorp loss to the missing API features churn driver"
+              weight: 4
+            - name: financial_accuracy
+              description: "Financial highlights use accurate numbers from the revenue report: $18.4M ARR, 8.2% QoQ growth, 78% gross margin, etc."
+              weight: 3
+            - name: customer_health_accuracy
+              description: "Customer health section accurately reflects churn data: rising mid-market and SMB churn, NPS decline from 44 to 38, top churn reasons"
+              weight: 3
+            - name: product_accuracy
+              description: "Product section accurately covers Q1 shipments and Q2 plans, referencing real items from the roadmap"
+              weight: 2
+            - name: risk_identification
+              description: "Risks section identifies real cross-cutting concerns like rising mid-market churn + reporting gaps, engineering attrition + open roles, SMB price sensitivity"
+              weight: 3
+            - name: board_discussion_topics
+              description: "Recommended discussion topics are strategic and data-driven, not generic"
+              weight: 2
+      - evaluator: rubric
+        weight: 4
+        config:
+          criteria:
+            - name: executive_tone
+              description: "Written in an objective, concise executive style appropriate for a board audience"
+              weight: 2
+            - name: word_limit
+              description: "Total output does not significantly exceed 600 words"
+              weight: 1
+            - name: structure
+              description: "Output follows the exact six-section structure requested in the instructions"
+              weight: 2
+
+timeout_seconds: 300
+execution_mode: sandboxed
+metadata:
+  tags: ["summarization", "executive-summary", "multi-source", "synthesis", "board-report"]
+  version: "1.0"

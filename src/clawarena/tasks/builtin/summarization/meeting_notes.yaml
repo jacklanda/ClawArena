@@ -1,0 +1,119 @@
+id: summarization.meeting_notes
+name: Summarize Meeting Transcript into Structured Notes
+category: summarization
+difficulty: easy
+description: >
+  Given a raw meeting transcript, produce structured meeting notes with
+  key discussion points, decisions made, and action items.
+
+instruction: |
+  Read the meeting transcript provided in the context and produce
+  structured meeting notes.  Your output must include:
+
+  1. **Meeting Header** — title, date, attendees.
+  2. **Agenda Items Discussed** — a numbered list of the main topics
+     covered, with a 1-2 sentence summary of each.
+  3. **Decisions Made** — a bullet list of every decision reached during
+     the meeting.
+  4. **Action Items** — a bullet list where each item includes:
+     - What needs to be done
+     - Who is responsible
+     - Due date (if mentioned)
+  5. **Next Steps** — brief note on follow-up or next meeting.
+
+  Be factual.  Do not add information that is not present in the
+  transcript.
+
+context:
+  meeting_title: "Weekly Product Sync"
+  meeting_date: "2025-03-17"
+  attendees:
+    - "Sarah Kim (Product Lead)"
+    - "Raj Patel (Engineering Manager)"
+    - "Tanya Osei (Design Lead)"
+    - "Chris Novak (Data Analyst)"
+  transcript: |
+    Sarah: Alright, let's get started.  First item — the onboarding
+    redesign.  Tanya, where are we?
+
+    Tanya: We finished the high-fidelity mockups last Friday.  I shared
+    them in Figma.  The main change is consolidating the five-step wizard
+    into a three-step flow.  We cut the "company info" and "integrations"
+    steps and moved them to post-onboarding settings.
+
+    Raj: I saw the mockups.  From an engineering perspective, the three-step
+    flow is actually simpler to implement.  My concern is the migration
+    path for existing users who are mid-onboarding.
+
+    Sarah: Good point.  Let's decide: do we force-reset in-progress
+    onboarding sessions or grandfather them on the old flow?
+
+    Raj: Grandfathering is safer.  We can set a cutoff — anyone who started
+    before the deploy date stays on the old flow, new users get the new one.
+
+    Sarah: Agreed.  Tanya, does that affect your designs?
+
+    Tanya: No, the old flow can stay as-is.  I just need to make sure the
+    new flow's entry point is clearly marked.  I'll update the spec.
+
+    Sarah: Great.  Decision made — we grandfather existing sessions.
+    Raj, how long for engineering to build the new three-step flow?
+
+    Raj: Two sprints, so targeting April 14 for staging.  I'll need final
+    specs from Tanya by March 24.
+
+    Tanya: I can do that.
+
+    Sarah: Perfect.  Next item — the retention dashboard.  Chris?
+
+    Chris: I have the initial queries running.  Week-over-week retention
+    is at 74%, which is down 3 points from last month.  The biggest drop-off
+    is between day 3 and day 7.  I'm slicing by acquisition channel now
+    to see if it's concentrated somewhere.
+
+    Sarah: That drop is concerning.  When can you have the channel breakdown?
+
+    Chris: By Wednesday.
+
+    Sarah: OK.  Once we have that, let's schedule a focused session to
+    dig into it.  Raj, can your team instrument more granular event tracking
+    in the onboarding flow?  It might be related.
+
+    Raj: Yes, I'll add it to the sprint backlog.  We can have basic event
+    tracking by end of this sprint.
+
+    Sarah: Last item — the Q2 roadmap draft is due to leadership by
+    March 28.  I'll circulate a first draft by Thursday.  Please review
+    and add comments by Friday so I can finalize over the weekend.
+
+    Everyone acknowledges.
+
+    Sarah: Great, we're done.  See you all next Monday.
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: header
+        description: "Notes include a meeting header with title, date, and all four attendees"
+        weight: 1
+      - name: agenda_items
+        description: "All three agenda topics are listed and summarized: onboarding redesign, retention dashboard, Q2 roadmap"
+        weight: 2
+      - name: decisions
+        description: "Key decisions are captured: grandfather existing onboarding sessions, three-step flow, April 14 staging target"
+        weight: 3
+      - name: action_items
+        description: "All action items are listed with owner and due date: Tanya specs by Mar 24, Chris channel breakdown by Wed, Raj event tracking this sprint, Sarah draft by Thursday, team review by Friday"
+        weight: 3
+      - name: accuracy
+        description: "Notes contain only information present in the transcript — no fabricated details"
+        weight: 2
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["summarization", "meeting-notes", "structured-output"]
+  version: "1.0"

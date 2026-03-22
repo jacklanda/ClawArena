@@ -1,0 +1,58 @@
+id: email.compose_simple
+name: Compose a Professional Email
+category: email
+difficulty: easy
+description: >
+  Compose a professional email given a recipient, subject, and key points
+  to cover.  The output must follow standard business email conventions
+  including a greeting, body, and sign-off.
+
+instruction: |
+  Write a professional email using the information provided in the context.
+  The email should:
+  1. Use an appropriate greeting for the recipient.
+  2. Clearly convey all the key points listed below.
+  3. Maintain a polite and professional tone throughout.
+  4. End with a professional sign-off using the sender's name.
+  5. Be concise — no more than 200 words in the body.
+
+context:
+  sender_name: "Jordan Rivera"
+  sender_title: "Product Manager"
+  recipient_name: "Alex Chen"
+  recipient_email: "alex.chen@acmecorp.com"
+  relationship: "colleague on the same team"
+  subject: "Q3 Feature Prioritization Meeting"
+  key_points:
+    - "Propose scheduling a meeting next Tuesday at 2 PM to review Q3 feature priorities"
+    - "Ask Alex to prepare the latest customer feedback summary before the meeting"
+    - "Mention that the VP of Product wants the finalized list by end of week"
+    - "Offer to share the draft roadmap document ahead of time"
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: greeting
+        description: "Email opens with an appropriate professional greeting addressing Alex"
+        weight: 1
+      - name: key_points_coverage
+        description: "All four key points from the context are clearly addressed in the email body"
+        weight: 3
+      - name: tone
+        description: "Tone is professional, polite, and appropriate for a colleague"
+        weight: 2
+      - name: sign_off
+        description: "Email ends with a professional sign-off and includes the sender's name"
+        weight: 1
+      - name: conciseness
+        description: "Email body is concise and does not exceed roughly 200 words"
+        weight: 1
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["email", "writing", "professional"]
+  version: "1.0"

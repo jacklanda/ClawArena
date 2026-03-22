@@ -1,0 +1,154 @@
+id: cascade.extract_and_email
+name: Extract Metrics, Summarize, and Compose Email
+category: cascade
+difficulty: medium
+description: >
+  A multi-step task: extract key metrics from raw data, generate a plain-
+  language summary of those metrics, then compose an email sharing the
+  findings with stakeholders.
+
+instruction: |
+  Complete the following three-step pipeline, outputting all three
+  parts clearly labeled:
+
+  **Step 1 — Extract Metrics:**
+  From the raw weekly sales data provided in the context, compute:
+    - Total revenue for the week
+    - Best-performing product by revenue
+    - Worst-performing product by revenue
+    - Day with highest total sales
+    - Week-over-week revenue change (previous week total is provided)
+
+  **Step 2 — Summary:**
+  Write a 3-4 sentence plain-language summary of the week's sales
+  performance, highlighting trends, standout results, and any concerns.
+
+  **Step 3 — Email:**
+  Compose a professional email from the sender to the recipients listed
+  in the context.  The email should:
+    - Include the key metrics from Step 1 in a scannable format
+    - Include the summary from Step 2 as the narrative
+    - Suggest one action item based on the data
+    - Be concise and suitable for a busy executive audience
+
+context:
+  sender:
+    name: "Avery Mitchell"
+    title: "Sales Analytics Lead"
+  recipients:
+    - name: "Diana Torres"
+      title: "VP of Sales"
+    - name: "Sam Huang"
+      title: "Head of Product"
+  previous_week_total_revenue: 142500.00
+  weekly_sales_data:
+    - date: "2025-03-10"
+      products:
+        - name: "Pro Plan"
+          units_sold: 12
+          unit_price: 299.00
+          revenue: 3588.00
+        - name: "Enterprise Plan"
+          units_sold: 3
+          unit_price: 1499.00
+          revenue: 4497.00
+        - name: "Starter Plan"
+          units_sold: 45
+          unit_price: 49.00
+          revenue: 2205.00
+    - date: "2025-03-11"
+      products:
+        - name: "Pro Plan"
+          units_sold: 18
+          unit_price: 299.00
+          revenue: 5382.00
+        - name: "Enterprise Plan"
+          units_sold: 5
+          unit_price: 1499.00
+          revenue: 7495.00
+        - name: "Starter Plan"
+          units_sold: 38
+          unit_price: 49.00
+          revenue: 1862.00
+    - date: "2025-03-12"
+      products:
+        - name: "Pro Plan"
+          units_sold: 15
+          unit_price: 299.00
+          revenue: 4485.00
+        - name: "Enterprise Plan"
+          units_sold: 7
+          unit_price: 1499.00
+          revenue: 10493.00
+        - name: "Starter Plan"
+          units_sold: 52
+          unit_price: 49.00
+          revenue: 2548.00
+    - date: "2025-03-13"
+      products:
+        - name: "Pro Plan"
+          units_sold: 22
+          unit_price: 299.00
+          revenue: 6578.00
+        - name: "Enterprise Plan"
+          units_sold: 8
+          unit_price: 1499.00
+          revenue: 11992.00
+        - name: "Starter Plan"
+          units_sold: 41
+          unit_price: 49.00
+          revenue: 2009.00
+    - date: "2025-03-14"
+      products:
+        - name: "Pro Plan"
+          units_sold: 25
+          unit_price: 299.00
+          revenue: 7475.00
+        - name: "Enterprise Plan"
+          units_sold: 10
+          unit_price: 1499.00
+          revenue: 14990.00
+        - name: "Starter Plan"
+          units_sold: 60
+          unit_price: 49.00
+          revenue: 2940.00
+
+expected_output:
+  total_revenue: 88949.00
+  best_product: "Enterprise Plan"
+  worst_product: "Starter Plan"
+  best_day: "2025-03-14"
+
+evaluation:
+  evaluator: composite
+  config:
+    evaluators:
+      - evaluator: rubric
+        weight: 5
+        config:
+          criteria:
+            - name: metric_accuracy
+              description: "Extracted metrics are numerically correct: total revenue ~$88,949, best product is Enterprise Plan, worst is Starter Plan, best day is Friday March 14"
+              weight: 4
+            - name: wow_change
+              description: "Week-over-week change is calculated correctly relative to the $142,500 previous week (showing a significant decline)"
+              weight: 2
+      - evaluator: rubric
+        weight: 5
+        config:
+          criteria:
+            - name: summary_quality
+              description: "Summary is 3-4 sentences, highlights the revenue decline vs previous week, notes Enterprise Plan strength, and flags the overall drop as a concern"
+              weight: 3
+            - name: email_format
+              description: "Email is professional, includes metrics in a scannable format (table or bullets), contains the narrative summary, and suggests a concrete action item"
+              weight: 3
+            - name: pipeline_structure
+              description: "Output is clearly organized into three labeled steps showing the full pipeline"
+              weight: 1
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["cascade", "data-extraction", "email", "multi-step"]
+  version: "1.0"

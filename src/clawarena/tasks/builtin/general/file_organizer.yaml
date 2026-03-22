@@ -1,0 +1,77 @@
+id: general.file_organizer
+name: Organize Files into Categorized Directories
+category: general
+difficulty: easy
+description: >
+  Given a flat list of files with various naming patterns, produce a plan
+  that organizes them into a logical directory structure based on file
+  type, date, and project.
+
+instruction: |
+  You are given a list of files currently sitting in a single flat
+  directory.  Produce a file organization plan that:
+
+  1. Creates a logical directory structure grouping files by their type
+     and project.
+  2. Assigns each file to the correct directory.
+  3. Renames files that have inconsistent naming to follow a uniform
+     convention: lowercase, hyphens instead of spaces or underscores,
+     and a clear descriptive name.
+  4. Identifies any files that appear to be duplicates or near-duplicates
+     and flags them for review.
+
+  Output the plan as:
+  - A tree view of the proposed directory structure
+  - A mapping table: original filename -> new path
+
+context:
+  current_directory: "/Users/shared/downloads"
+  files:
+    - "Q4_2024_Revenue_Report.xlsx"
+    - "q4-2024-revenue-report-FINAL.xlsx"
+    - "meeting_notes_2025_03_10.docx"
+    - "Meeting Notes 2025-03-12.docx"
+    - "meetingnotes_20250314.docx"
+    - "atlas-project-spec-v2.pdf"
+    - "Atlas Project Spec v3.pdf"
+    - "profile_photo.jpg"
+    - "screenshot_2025_03_01.png"
+    - "screenshot 2025-03-05.png"
+    - "Screenshot_20250310.PNG"
+    - "budget_2025_draft.xlsx"
+    - "invoice-acme-corp-feb-2025.pdf"
+    - "invoice_globex_mar_2025.pdf"
+    - "README.md"
+    - "deploy-script.sh"
+    - "backup_db_20250301.sql"
+    - "logo_final_FINAL_v2.png"
+    - "presentation-q1-review.pptx"
+    - "random_notes.txt"
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: directory_structure
+        description: "Proposed structure groups files logically by type or purpose — e.g., documents, spreadsheets, images, code/scripts, invoices/finance"
+        weight: 3
+      - name: file_assignment
+        description: "Every file from the original list is accounted for in the mapping table"
+        weight: 2
+      - name: naming_consistency
+        description: "Renamed files follow the specified convention: lowercase, hyphens, descriptive names"
+        weight: 2
+      - name: duplicate_detection
+        description: "Near-duplicates are flagged: the two revenue reports, the Atlas project spec versions, and potentially the multiple screenshots"
+        weight: 3
+      - name: practical_structure
+        description: "The proposed structure is practical and not over-engineered — a real person would find it useful"
+        weight: 2
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["general", "file-management", "organization", "planning"]
+  version: "1.0"
