@@ -1,0 +1,141 @@
+id: general.schedule_planner
+name: Create an Optimized Daily Schedule
+category: general
+difficulty: medium
+description: >
+  Given a list of tasks with durations, priorities, deadlines, and
+  constraints, produce an optimized daily schedule that maximizes
+  productivity while respecting all constraints.
+
+instruction: |
+  Create an optimized daily schedule for the person described in the
+  context.  The schedule should:
+
+  1. Fit all tasks into the available working hours, or explicitly
+     identify tasks that cannot fit and recommend what to defer.
+  2. Respect all hard constraints (fixed meetings, deadlines, blocked
+     time).
+  3. Place high-priority tasks during the person's peak productivity
+     window.
+  4. Group related tasks together when possible to minimize context
+     switching.
+  5. Include appropriate breaks (at least a lunch break and short breaks
+     between intensive tasks).
+
+  Output format:
+  - A time-blocked schedule from start to end of day, with each block
+    showing: time range, task name, and a brief rationale for placement.
+  - A section listing any tasks that were deferred with an explanation.
+  - A brief "schedule notes" section with any recommendations for the
+    person.
+
+context:
+  person:
+    name: "Riley Chen"
+    role: "Senior Product Manager"
+    work_hours: "8:30 AM - 6:00 PM"
+    peak_productivity: "9:00 AM - 12:00 PM"
+    preferences:
+      - "Prefers not to have meetings before 10 AM"
+      - "Likes to batch email/Slack responses rather than checking continuously"
+      - "Needs a 30-minute lunch between 12:00 and 1:30 PM"
+
+  tasks:
+    - name: "Q2 roadmap draft"
+      duration_minutes: 90
+      priority: high
+      deadline: "End of day today"
+      notes: "Requires deep focus; references needed from the strategy doc"
+
+    - name: "1:1 with engineering lead"
+      duration_minutes: 30
+      priority: high
+      type: fixed_meeting
+      fixed_time: "10:30 AM"
+      notes: "Recurring weekly meeting, cannot be moved"
+
+    - name: "Sprint planning meeting"
+      duration_minutes: 60
+      priority: high
+      type: fixed_meeting
+      fixed_time: "2:00 PM"
+      notes: "Full team meeting; Riley needs to present the priority list"
+
+    - name: "Review 3 PRDs from team members"
+      duration_minutes: 60
+      priority: medium
+      deadline: "End of day today"
+      notes: "Can be split into smaller chunks if needed"
+
+    - name: "Respond to stakeholder emails"
+      duration_minutes: 30
+      priority: medium
+      notes: "Several pending replies from yesterday"
+
+    - name: "Prepare sprint planning presentation"
+      duration_minutes: 45
+      priority: high
+      deadline: "Before 2:00 PM"
+      notes: "Must be done before the sprint planning meeting"
+
+    - name: "User research review"
+      duration_minutes: 45
+      priority: low
+      notes: "Review latest usability test recordings; can be deferred"
+
+    - name: "Update Jira backlog priorities"
+      duration_minutes: 30
+      priority: medium
+      notes: "Related to sprint planning; best done before or after that meeting"
+
+    - name: "Competitive analysis deep-dive"
+      duration_minutes: 120
+      priority: medium
+      deadline: "End of week (Friday)"
+      notes: "Long task; can be partially completed today"
+
+    - name: "Sync with design team on onboarding flow"
+      duration_minutes: 30
+      priority: medium
+      type: flexible_meeting
+      notes: "Need to schedule; design team is available 11 AM - 4 PM"
+
+    - name: "Write weekly status update"
+      duration_minutes: 20
+      priority: low
+      deadline: "End of day today"
+      notes: "Quick summary for leadership"
+
+expected_output: null
+
+evaluation:
+  evaluator: rubric
+  config:
+    criteria:
+      - name: constraint_compliance
+        description: "All hard constraints are respected: fixed meetings at their specified times, deadlines met, sprint planning prep done before 2 PM, lunch break included"
+        weight: 4
+      - name: priority_placement
+        description: "High-priority deep-focus tasks (Q2 roadmap draft) are placed during the 9-12 peak productivity window"
+        weight: 3
+      - name: grouping
+        description: "Related tasks are grouped: Jira backlog update near sprint planning, email responses batched together, PRD reviews grouped"
+        weight: 2
+      - name: breaks
+        description: "Schedule includes a lunch break (30+ minutes between 12-1:30) and does not stack intensive tasks back-to-back without breaks"
+        weight: 2
+      - name: deferred_items
+        description: "If any tasks don't fit, they are explicitly listed with reasoning for deferral; low-priority items like user research or competitive analysis are deferred before high-priority ones"
+        weight: 2
+      - name: completeness
+        description: "Every task from the list is either scheduled or explicitly deferred; none are silently dropped"
+        weight: 2
+      - name: rationale
+        description: "Each time block includes a brief rationale explaining why the task was placed there"
+        weight: 1
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["general", "scheduling", "planning", "optimization", "time-management"]
+  version: "1.0"

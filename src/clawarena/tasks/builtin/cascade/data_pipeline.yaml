@@ -1,0 +1,125 @@
+id: cascade.data_pipeline
+name: Log Analysis to Incident Report Pipeline
+category: cascade
+difficulty: hard
+description: >
+  A complex multi-step pipeline: parse raw application logs, identify and
+  classify errors, generate a structured incident report, and draft a
+  stakeholder notification email.
+
+instruction: |
+  Execute the following five-step pipeline.  Output each step clearly
+  labeled so the work can be verified at each stage.
+
+  **Step 1 — Parse Logs:**
+  Parse the raw log entries in the context.  For each entry, extract:
+    - Timestamp
+    - Log level (INFO, WARN, ERROR, FATAL)
+    - Service name
+    - Message
+
+  **Step 2 — Identify Errors:**
+  Filter to only ERROR and FATAL entries.  Group them by service.
+  For each error, note whether it appears to be a recurring pattern
+  (same error message appearing multiple times).
+
+  **Step 3 — Categorize:**
+  Classify each error group into one of these categories:
+    - **Infrastructure** — network, DNS, timeout, connection issues
+    - **Application** — null pointers, unhandled exceptions, logic errors
+    - **Data** — corrupt records, schema violations, missing fields
+    - **External** — third-party API failures, rate limits
+
+  **Step 4 — Generate Incident Report:**
+  Produce a structured incident report with:
+    - Incident ID (generate one in the format INC-YYYYMMDD-NNN)
+    - Severity (Critical / High / Medium / Low) based on the error
+      patterns: FATAL = Critical, recurring ERRORs across services = High,
+      isolated ERRORs = Medium
+    - Affected services
+    - Timeline of first and last occurrence
+    - Root cause hypothesis based on the error patterns
+    - Recommended immediate actions
+
+  **Step 5 — Draft Notification Email:**
+  Compose a concise incident notification email from the on-call engineer
+  to the engineering leadership and affected service owners.  The email
+  should include the incident summary, current impact, and next steps.
+
+context:
+  on_call_engineer: "Morgan Blake"
+  log_entries: |
+    2025-03-18T02:14:33Z INFO  [api-gateway] Request received: POST /api/v2/orders
+    2025-03-18T02:14:34Z INFO  [order-service] Processing order ORD-99812
+    2025-03-18T02:14:35Z ERROR [order-service] Failed to validate order: NullPointerException at OrderValidator.java:142 — customer.address.zipCode is null
+    2025-03-18T02:14:35Z WARN  [order-service] Retry attempt 1/3 for order ORD-99812
+    2025-03-18T02:14:36Z ERROR [order-service] Failed to validate order: NullPointerException at OrderValidator.java:142 — customer.address.zipCode is null
+    2025-03-18T02:14:36Z ERROR [order-service] Failed to validate order: NullPointerException at OrderValidator.java:142 — customer.address.zipCode is null
+    2025-03-18T02:14:37Z ERROR [order-service] Order ORD-99812 failed after 3 retries
+    2025-03-18T02:15:01Z INFO  [payment-service] Processing payment for ORD-99810
+    2025-03-18T02:15:03Z ERROR [payment-service] Connection timeout to Stripe API: connect timed out after 5000ms
+    2025-03-18T02:15:08Z ERROR [payment-service] Connection timeout to Stripe API: connect timed out after 5000ms
+    2025-03-18T02:15:13Z ERROR [payment-service] Connection timeout to Stripe API: connect timed out after 5000ms
+    2025-03-18T02:15:14Z FATAL [payment-service] Circuit breaker OPEN for stripe-client — 3 consecutive failures
+    2025-03-18T02:15:14Z ERROR [payment-service] Payment processing halted — circuit breaker open
+    2025-03-18T02:16:00Z INFO  [notification-service] Sending order confirmation for ORD-99808
+    2025-03-18T02:16:01Z ERROR [notification-service] Failed to render email template: missing field 'order.shippingEstimate' in template order-confirmation-v2.html
+    2025-03-18T02:16:30Z ERROR [notification-service] Failed to render email template: missing field 'order.shippingEstimate' in template order-confirmation-v2.html
+    2025-03-18T02:17:00Z WARN  [api-gateway] Elevated latency detected: p99 = 4200ms (threshold: 2000ms)
+    2025-03-18T02:17:15Z ERROR [inventory-service] Database connection pool exhausted: 50/50 connections in use
+    2025-03-18T02:17:16Z ERROR [inventory-service] Database connection pool exhausted: 50/50 connections in use
+    2025-03-18T02:17:17Z FATAL [inventory-service] Unable to serve requests — all DB connections in use, entering degraded mode
+    2025-03-18T02:17:30Z ERROR [api-gateway] 503 Service Unavailable returned to client — upstream inventory-service unhealthy
+    2025-03-18T02:18:00Z INFO  [api-gateway] Health check: order-service=UP, payment-service=DEGRADED, notification-service=UP, inventory-service=DOWN
+
+  notification_recipients:
+    - name: "VP of Engineering"
+      email: "vp-eng@company.com"
+    - name: "Order Service Owner"
+      email: "order-team@company.com"
+    - name: "Payment Service Owner"
+      email: "payments-team@company.com"
+    - name: "Inventory Service Owner"
+      email: "inventory-team@company.com"
+
+expected_output: null
+
+evaluation:
+  evaluator: composite
+  config:
+    evaluators:
+      - evaluator: rubric
+        weight: 4
+        config:
+          criteria:
+            - name: log_parsing
+              description: "Step 1 correctly parses all log entries with accurate timestamps, levels, services, and messages"
+              weight: 2
+            - name: error_identification
+              description: "Step 2 identifies all ERROR and FATAL entries, groups them by service (order-service, payment-service, notification-service, inventory-service), and flags recurring patterns"
+              weight: 3
+            - name: categorization
+              description: "Step 3 correctly categorizes: order-service errors as Application (null pointer), payment-service as External (Stripe timeout), notification-service as Data (missing template field), inventory-service as Infrastructure (DB pool exhaustion)"
+              weight: 3
+      - evaluator: rubric
+        weight: 6
+        config:
+          criteria:
+            - name: incident_report_quality
+              description: "Step 4 produces a complete incident report with ID, correct severity (Critical due to FATAL + multi-service impact), affected services list, timeline, plausible root cause hypothesis, and actionable immediate steps"
+              weight: 4
+            - name: root_cause_reasoning
+              description: "Root cause hypothesis shows reasoning — e.g., DB pool exhaustion in inventory-service may be contributing to gateway latency, payment failures are from external Stripe outage, order validation is a code bug"
+              weight: 3
+            - name: email_quality
+              description: "Step 5 email is concise, professional, includes incident summary and severity, current impact on services, and clear next steps"
+              weight: 2
+            - name: pipeline_coherence
+              description: "Each step builds on the previous one; the incident report reflects the categorized errors, and the email reflects the incident report"
+              weight: 2
+
+timeout_seconds: 360
+execution_mode: sandboxed
+metadata:
+  tags: ["cascade", "log-analysis", "incident-response", "multi-step", "pipeline"]
+  version: "1.0"

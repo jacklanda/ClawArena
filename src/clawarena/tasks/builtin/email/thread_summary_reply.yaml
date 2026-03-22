@@ -1,0 +1,176 @@
+id: email.thread_summary_reply
+name: Summarize Thread and Reply to All Open Items
+category: email
+difficulty: hard
+description: >
+  Given a long, multi-participant email thread with several interleaved
+  topics and open action items, produce a concise summary of the thread
+  and compose a reply that addresses every outstanding item.
+
+instruction: |
+  You are replying as the sender specified in the context.  You have two
+  deliverables:
+
+  Part 1 — Thread Summary:
+    Produce a structured summary of the email thread.  The summary must
+    include:
+    a) A one-paragraph executive overview of the discussion.
+    b) A bullet list of every decision that has been made.
+    c) A bullet list of every open question or unresolved item, noting
+       who it is assigned to.
+
+  Part 2 — Reply Email:
+    Compose a reply to the entire thread that:
+    1. Shares the summary (Part 1) at the top for the team's reference.
+    2. Directly addresses every open item assigned to you with a clear
+       answer, timeline, or next step.
+    3. Flags any items that you believe are at risk and proposes
+       mitigation.
+    4. Ends with a clear call-to-action for the remaining participants.
+
+  Format the output as a single email that you would send via "Reply All."
+
+context:
+  sender_name: "Kenji Watanabe"
+  sender_role: "Staff Software Engineer"
+  thread:
+    - from: "Lisa Park"
+      role: "VP of Engineering"
+      timestamp: "2025-03-10T08:00:00Z"
+      body: |
+        Team,
+
+        As we approach the March 28 launch window for Project Atlas, I want
+        to make sure we have full alignment.  Here's where I need updates:
+
+        1. API Gateway migration — @Kenji, is the new rate-limiting layer
+           deployed to staging?
+        2. Database sharding — @Omar, what's the status of the shard
+           rebalancing job?
+        3. Monitoring — @Suki, are the new Datadog dashboards live?
+        4. Load testing — has anyone started the 10k-concurrent-user soak
+           test?
+
+        We absolutely cannot slip this date.  Please respond by EOD Tuesday.
+
+        — Lisa
+
+    - from: "Omar Farouk"
+      role: "Senior Database Engineer"
+      timestamp: "2025-03-10T11:30:00Z"
+      body: |
+        Hi Lisa,
+
+        Shard rebalancing is 80% complete.  We hit an issue with the
+        tenant-62 partition that's holding up the last 20%.  I've filed
+        INFRA-4021 and expect it resolved by Wednesday.
+
+        One concern: the rebalancing will require a 15-minute read-only
+        window on the billing database.  @Kenji, does the API gateway
+        gracefully handle upstream read-only mode, or will we get 500s?
+
+        Omar
+
+    - from: "Suki Tanaka"
+      role: "SRE Lead"
+      timestamp: "2025-03-10T13:15:00Z"
+      body: |
+        Lisa,
+
+        Datadog dashboards are live for the API layer and database cluster.
+        Still waiting on Kenji's team to instrument the new rate-limiter
+        metrics before I can add that panel.
+
+        @Kenji — can you expose Prometheus-format /metrics on the rate
+        limiter by Thursday?
+
+        Re: load testing — I can kick off the soak test once the gateway
+        and sharding are both on staging.  Estimated 48-hour run.
+
+        — Suki
+
+    - from: "Lisa Park"
+      role: "VP of Engineering"
+      timestamp: "2025-03-11T09:00:00Z"
+      body: |
+        Thanks for the updates.  Summarizing what I'm hearing:
+
+        - Sharding blocked on INFRA-4021, ETA Wednesday.
+        - Dashboards mostly live, pending rate-limiter metrics.
+        - Soak test can't start until gateway + sharding are on staging.
+
+        This is tight.  @Kenji — I haven't heard from you yet.  I need
+        the gateway status and answers to Omar and Suki's questions ASAP.
+
+        Also, new item: Legal has asked for a data-residency audit trail
+        on all cross-region API calls before launch.  @Kenji, this falls
+        under the gateway team — can you scope this?
+
+        — Lisa
+
+    - from: "Omar Farouk"
+      role: "Senior Database Engineer"
+      timestamp: "2025-03-11T10:45:00Z"
+      body: |
+        Quick update: INFRA-4021 root cause identified.  Fix is in review.
+        I'm now confident we'll finish rebalancing by Wednesday EOD.
+
+        @Kenji — still need your answer on the read-only mode question.
+        If the gateway can't handle it, I need to schedule the window for
+        off-hours and that changes my timeline.
+
+        Omar
+
+  open_items_for_sender:
+    - "Is the new rate-limiting layer deployed to staging?"
+    - "Does the API gateway gracefully handle upstream read-only mode?"
+    - "Can you expose Prometheus-format /metrics on the rate limiter by Thursday?"
+    - "Scope the data-residency audit trail for cross-region API calls."
+
+expected_output: null
+
+evaluation:
+  evaluator: composite
+  config:
+    evaluators:
+      - evaluator: rubric
+        weight: 7
+        config:
+          criteria:
+            - name: summary_executive_overview
+              description: "Summary includes a clear one-paragraph overview capturing the state of Project Atlas across all workstreams"
+              weight: 2
+            - name: summary_decisions
+              description: "Summary lists decisions already made (e.g., March 28 launch date firm, soak test plan, INFRA-4021 approach)"
+              weight: 2
+            - name: summary_open_items
+              description: "Summary lists all open items with correct ownership — including items for Omar, Suki, and Kenji"
+              weight: 3
+            - name: sender_items_addressed
+              description: "Reply directly answers all four open items assigned to the sender with specific, concrete information"
+              weight: 4
+            - name: risk_identification
+              description: "Reply identifies schedule risks (e.g., tight timeline for soak test, data-residency scoping) and proposes mitigations"
+              weight: 3
+            - name: call_to_action
+              description: "Reply ends with a clear call-to-action for remaining participants"
+              weight: 2
+            - name: structure_and_clarity
+              description: "Output is well-structured with clear sections for summary and reply, easy to scan"
+              weight: 2
+      - evaluator: rubric
+        weight: 3
+        config:
+          criteria:
+            - name: factual_accuracy
+              description: "No fabricated details — all referenced ticket numbers, dates, names, and percentages match the thread"
+              weight: 3
+            - name: professional_tone
+              description: "Tone is professional, collaborative, and appropriate for a VP-level audience"
+              weight: 1
+
+timeout_seconds: 300
+execution_mode: sandboxed
+metadata:
+  tags: ["email", "summarization", "writing", "complex", "multi-topic"]
+  version: "1.0"
