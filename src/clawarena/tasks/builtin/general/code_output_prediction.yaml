@@ -1,0 +1,83 @@
+id: general.code_output_prediction
+name: Predict Python Program Output
+category: general
+difficulty: hard
+description: >
+  Given a Python program with closures, mutable default arguments, generator
+  expressions, and subtle scoping rules, predict its exact printed output.
+
+instruction: |
+  Read the following Python program carefully and determine what it prints
+  to stdout when executed.  Return ONLY the exact output — nothing else.
+  No explanation, no code fences, no extra whitespace.
+
+  ```python
+  def make_counters():
+      counters = []
+      for i in range(3):
+          def counter(n=i):
+              return n * n
+          counters.append(counter)
+      return counters
+
+  def accumulate(fn, items, start=0):
+      result = start
+      for x in items:
+          result = fn(result, x)
+      return result
+
+  class Tracker:
+      _log = []
+
+      def __init__(self, name):
+          self.name = name
+
+      def record(self, value):
+          self._log.append(f"{self.name}:{value}")
+
+      @classmethod
+      def dump(cls):
+          return ";".join(cls._log)
+
+  cs = make_counters()
+  vals = [c() for c in cs]
+  print(vals)
+
+  total = accumulate(lambda a, b: a + b, vals)
+  print(total)
+
+  t1 = Tracker("A")
+  t2 = Tracker("B")
+  t1.record(vals[0])
+  t2.record(vals[2])
+  t1.record(total)
+  print(Tracker.dump())
+  ```
+
+context:
+  language: python
+  concepts:
+    - closures_with_default_arguments
+    - class_variable_mutation
+    - lambda_accumulation
+    - list_comprehension
+
+expected_output: |
+  [0, 1, 4]
+  5
+  A:0;B:4;A:5
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "[0, 1, 4]"
+      - "5"
+      - "A:0;B:4;A:5"
+    case_sensitive: true
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["code", "python", "tracing", "closures", "classes"]
+  version: "1.0"

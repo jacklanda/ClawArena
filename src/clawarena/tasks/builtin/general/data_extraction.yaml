@@ -1,0 +1,97 @@
+id: general.data_extraction
+name: Extract Structured Data from Messy Text
+category: general
+difficulty: medium
+description: >
+  Given a messy, unstructured text containing an incident report, extract
+  specific data points and return them in a precise structured format.
+
+instruction: |
+  Read the following incident report email and extract the requested data
+  points.  The text is deliberately messy — pay close attention to
+  details, corrections, and conflicting information (use the LATEST
+  correction when conflicts exist).
+
+  --- BEGIN EMAIL ---
+  From: ops-team@acmecorp.io
+  Date: March 15, 2025 2:47 AM PST
+  Subject: RE: RE: URGENT - Production DB Incident #INC-20250315-042
+
+  Hey team,
+
+  Quick update on the outage.  The initial alert fired at 01:23 UTC (not
+  01:32 as I said earlier, sorry — typo).  Root cause was the connection
+  pool exhaustion on db-primary-west-2.  Peak error rate hit 4,892
+  errors/min at 01:41 UTC.
+
+  Affected services (confirmed):
+  - payment-service v3.12.1 (critical)
+  - inventory-api v2.8.0 (major)
+  - notification-svc v1.4.3 (minor — only delayed pushes)
+
+  User impact: approximately 12,847 failed transactions, ~$847,231 in
+  blocked revenue.  UPDATE: finance corrected this to $892,104 after
+  including the EU region.
+
+  Mitigation: We restarted the connection pool at 02:15 UTC and deployed
+  hotfix HOTFIX-4891 at 02:38 UTC.  Full recovery confirmed at 02:52 UTC.
+
+  Duration: 01:23 UTC to 02:52 UTC = 89 minutes total.
+
+  Action items owned by: Sarah K. (infra), Mike T. (payments), Diana R.
+  (monitoring)
+
+  - Sarah
+  --- END EMAIL ---
+
+  Extract the following and return in EXACTLY this format:
+
+  INCIDENT_ID: <value>
+  ALERT_TIME_UTC: <value>
+  PEAK_ERROR_RATE: <value>
+  AFFECTED_SERVICES: <count>
+  CRITICAL_SERVICE: <name and version>
+  FAILED_TRANSACTIONS: <value>
+  REVENUE_IMPACT: <corrected value>
+  HOTFIX_ID: <value>
+  RECOVERY_TIME_UTC: <value>
+  DURATION_MINUTES: <value>
+  ACTION_OWNERS: <count>
+
+context:
+  source_type: email
+  incident_report: true
+
+expected_output: |
+  INCIDENT_ID: INC-20250315-042
+  ALERT_TIME_UTC: 01:23
+  PEAK_ERROR_RATE: 4892
+  AFFECTED_SERVICES: 3
+  CRITICAL_SERVICE: payment-service v3.12.1
+  FAILED_TRANSACTIONS: 12847
+  REVENUE_IMPACT: 892104
+  HOTFIX_ID: HOTFIX-4891
+  RECOVERY_TIME_UTC: 02:52
+  DURATION_MINUTES: 89
+  ACTION_OWNERS: 3
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "INC-20250315-042"
+      - "ALERT_TIME_UTC: 01:23"
+      - "4892"
+      - "AFFECTED_SERVICES: 3"
+      - "payment-service v3.12.1"
+      - "REVENUE_IMPACT: 892104"
+      - "HOTFIX-4891"
+      - "RECOVERY_TIME_UTC: 02:52"
+      - "DURATION_MINUTES: 89"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["extraction", "incident-report", "structured-data", "attention-to-detail"]
+  version: "1.0"

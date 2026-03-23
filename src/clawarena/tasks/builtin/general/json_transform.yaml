@@ -1,0 +1,80 @@
+id: general.json_transform
+name: Complex JSON Data Transformation
+category: general
+difficulty: medium
+description: >
+  Transform a nested JSON structure using a specified set of rules
+  involving flattening, filtering, aggregation, and key remapping.
+
+instruction: |
+  Apply the following transformation rules to the input JSON and return
+  the resulting JSON.  Rules are applied in order.
+
+  Input JSON:
+  ```json
+  {
+    "company": "TechCorp",
+    "departments": [
+      {
+        "name": "Engineering",
+        "teams": [
+          {"name": "Backend", "members": ["Alice", "Bob", "Carol"], "budget": 150000},
+          {"name": "Frontend", "members": ["Dave", "Eve"], "budget": 100000},
+          {"name": "DevOps", "members": ["Frank"], "budget": 80000}
+        ]
+      },
+      {
+        "name": "Product",
+        "teams": [
+          {"name": "Design", "members": ["Grace", "Heidi"], "budget": 90000},
+          {"name": "Research", "members": ["Ivan", "Judy", "Karl", "Liam"], "budget": 200000}
+        ]
+      },
+      {
+        "name": "Sales",
+        "teams": [
+          {"name": "Enterprise", "members": ["Mallory", "Niaj", "Oscar"], "budget": 120000},
+          {"name": "SMB", "members": ["Peggy"], "budget": 60000}
+        ]
+      }
+    ]
+  }
+  ```
+
+  Transformation rules:
+  1. Flatten: Create a top-level array of team objects, each with keys:
+     "dept", "team", "size", "budget"
+  2. Filter: Remove any team with size < 2
+  3. Sort: Order by budget descending
+  4. Add field: Add "per_capita" = floor(budget / size) to each team
+  5. Aggregate: Add a summary object at the end with:
+     "total_teams", "total_members", "total_budget"
+
+  Return ONLY the resulting JSON — compact format (no pretty-printing),
+  no explanation.  Use double quotes, no trailing commas.
+
+context:
+  transform_type: flatten_filter_sort_aggregate
+
+expected_output: '[{"dept":"Product","team":"Research","size":4,"budget":200000,"per_capita":50000},{"dept":"Engineering","team":"Backend","size":3,"budget":150000,"per_capita":50000},{"dept":"Sales","team":"Enterprise","size":3,"budget":120000,"per_capita":40000},{"dept":"Engineering","team":"Frontend","size":2,"budget":100000,"per_capita":50000},{"dept":"Product","team":"Design","size":2,"budget":90000,"per_capita":45000},{"total_teams":5,"total_members":14,"total_budget":660000}]'
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - '"team":"Research","size":4,"budget":200000'
+      - '"team":"Backend","size":3,"budget":150000'
+      - '"team":"Enterprise","size":3,"budget":120000'
+      - '"total_teams":5'
+      - '"total_members":14'
+      - '"total_budget":660000'
+      - '"per_capita":50000'
+      - '"per_capita":40000'
+      - '"per_capita":45000'
+    case_sensitive: true
+
+timeout_seconds: 150
+execution_mode: sandboxed
+metadata:
+  tags: ["json", "data-transformation", "filtering", "aggregation"]
+  version: "1.0"

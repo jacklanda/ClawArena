@@ -1,0 +1,118 @@
+id: general.excel_cross_sheet_reconciliation
+name: Cross-Sheet Data Reconciliation and Discrepancy Report
+category: general
+difficulty: hard
+description: >
+  Given three spreadsheets from different departments that should agree
+  but contain discrepancies, reconcile the data by cross-referencing
+  records, identifying mismatches, and computing the corrected totals.
+
+instruction: |
+  Three departments (Finance, Operations, Sales) each maintain their own
+  records of the same set of purchase orders.  Cross-reference all three
+  sheets to identify discrepancies and produce a reconciliation report.
+
+  === Sheet: "Finance" ===
+  | PO#    | Vendor        | Amount    | Status    |
+  |--------|---------------|-----------|-----------|
+  | PO-101 | Acme Corp     | 15,420.00 | Paid      |
+  | PO-102 | Globex Inc    | 8,750.00  | Paid      |
+  | PO-103 | Initech       | 22,100.00 | Pending   |
+  | PO-104 | Umbrella Ltd  | 5,300.00  | Paid      |
+  | PO-105 | Wayne Ent     | 31,000.00 | Paid      |
+  | PO-106 | Stark Ind     | 12,800.00 | Pending   |
+  | PO-107 | Oscorp        | 9,200.00  | Cancelled |
+  | PO-108 | LexCorp       | 18,500.00 | Paid      |
+
+  === Sheet: "Operations" ===
+  | PO#    | Vendor        | Amount    | Received  |
+  |--------|---------------|-----------|-----------|
+  | PO-101 | Acme Corp     | 15,420.00 | Yes       |
+  | PO-102 | Globex Inc    | 8,750.00  | Yes       |
+  | PO-103 | Initech       | 23,100.00 | No        |
+  | PO-104 | Umbrella Ltd  | 5,300.00  | Yes       |
+  | PO-105 | Wayne Ent     | 31,000.00 | Yes       |
+  | PO-106 | Stark Ind     | 12,800.00 | No        |
+  | PO-108 | LexCorp       | 18,500.00 | Yes       |
+  | PO-109 | Cyberdyne     | 7,600.00  | Yes       |
+
+  === Sheet: "Sales" ===
+  | PO#    | Vendor        | Amount    | Requested By |
+  |--------|---------------|-----------|--------------|
+  | PO-101 | Acme Corp     | 15,420.00 | Alice        |
+  | PO-102 | Globex Inc    | 8,950.00  | Bob          |
+  | PO-103 | Initech       | 22,100.00 | Carol        |
+  | PO-104 | Umbrella Ltd  | 5,300.00  | Dave         |
+  | PO-105 | Wayne Enterprises | 31,000.00 | Eve      |
+  | PO-106 | Stark Ind     | 12,800.00 | Frank        |
+  | PO-107 | Oscorp        | 9,200.00  | Grace        |
+  | PO-108 | LexCorp       | 18,500.00 | Hank         |
+  | PO-110 | Daily Planet  | 4,200.00  | Iris         |
+
+  Rules for reconciliation:
+  1. A PO is "fully matched" if it appears in ALL 3 sheets with the SAME
+     amount and the same vendor name (minor name variations like
+     "Wayne Ent" vs "Wayne Enterprises" count as the SAME vendor).
+  2. An "amount discrepancy" occurs when a PO appears in multiple sheets
+     with different amounts.
+  3. A "missing record" is a PO that appears in some but not all sheets.
+
+  Return your answer in EXACTLY this format:
+
+  FULLY_MATCHED: <comma-separated PO numbers in order>
+  AMOUNT_DISCREPANCIES:
+  <PO#>|<sheet1:amount>|<sheet2:amount>
+  ...
+  MISSING_RECORDS:
+  <PO#>|missing from <sheet(s)>
+  ...
+  FINANCE_TOTAL: <sum of all Finance amounts>
+  OPERATIONS_TOTAL: <sum of all Operations amounts>
+  SALES_TOTAL: <sum of all Sales amounts>
+  MATCHED_TOTAL: <sum of amounts for fully matched POs, using Finance amounts>
+  DISCREPANCY_COUNT: <number of POs with amount discrepancies>
+
+context:
+  departments: ["Finance", "Operations", "Sales"]
+  reconciliation_rules:
+    - all_three_sheets_must_agree
+    - minor_vendor_name_variations_are_acceptable
+    - amounts_must_match_exactly
+
+expected_output: |
+  FULLY_MATCHED: PO-101, PO-104, PO-105, PO-106, PO-108
+  AMOUNT_DISCREPANCIES:
+  PO-102|Finance:8750.00|Sales:8950.00
+  PO-103|Finance:22100.00|Operations:23100.00
+  MISSING_RECORDS:
+  PO-107|missing from Operations
+  PO-109|missing from Finance, Sales
+  PO-110|missing from Finance, Operations
+  FINANCE_TOTAL: 123070.00
+  OPERATIONS_TOTAL: 122470.00
+  SALES_TOTAL: 127470.00
+  MATCHED_TOTAL: 83020.00
+  DISCREPANCY_COUNT: 2
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "PO-101, PO-104, PO-105, PO-106, PO-108"
+      - "PO-102|Finance:8750.00|Sales:8950.00"
+      - "PO-103|Finance:22100.00|Operations:23100.00"
+      - "PO-107|missing from Operations"
+      - "PO-109|missing from Finance, Sales"
+      - "PO-110|missing from Finance, Operations"
+      - "FINANCE_TOTAL: 123070.00"
+      - "OPERATIONS_TOTAL: 122470.00"
+      - "SALES_TOTAL: 127470.00"
+      - "MATCHED_TOTAL: 83020.00"
+      - "DISCREPANCY_COUNT: 2"
+    case_sensitive: false
+
+timeout_seconds: 300
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "reconciliation", "cross-reference", "discrepancy", "multi-sheet"]
+  version: "1.0"

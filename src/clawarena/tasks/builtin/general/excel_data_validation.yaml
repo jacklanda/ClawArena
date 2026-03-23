@@ -1,0 +1,104 @@
+id: general.excel_data_validation
+name: Spreadsheet Data Validation and Error Detection
+category: general
+difficulty: medium
+description: >
+  Given a spreadsheet with intentional data quality issues, identify every
+  error by applying a set of validation rules, classify each error type,
+  and compute summary statistics.
+
+instruction: |
+  You are given an employee payroll spreadsheet that contains various data
+  quality issues.  Apply the validation rules below and report every error
+  found.
+
+  === Validation Rules ===
+  R1: Employee ID must match pattern "EMP-" followed by exactly 4 digits
+  R2: Name must not be blank and must contain at least two words
+  R3: Department must be one of: Engineering, Sales, Marketing, Finance, HR
+  R4: Salary must be between 40,000 and 250,000 (inclusive)
+  R5: Start Date must be a valid date in YYYY-MM-DD format, not in the future (today is 2025-03-15)
+  R6: Email must match pattern: firstname.lastname@company.com (lowercase)
+  R7: Manager ID must either be "NONE" (for top-level) or a valid EMP-XXXX that exists in the Employee ID column
+
+  === Payroll Data ===
+  | Row | Emp ID    | Name            | Dept        | Salary  | Start Date | Email                        | Manager ID |
+  |-----|-----------|-----------------|-------------|---------|------------|------------------------------|------------|
+  |  2  | EMP-1001  | Sarah Connor    | Engineering | 125000  | 2020-03-15 | sarah.connor@company.com     | NONE       |
+  |  3  | EMP-1002  | John Smith      | Sales       | 92000   | 2021-06-01 | john.smith@company.com       | EMP-1001   |
+  |  4  | EMP-103   | Alice Williams  | Engineering | 118000  | 2019-11-20 | alice.williams@company.com   | EMP-1001   |
+  |  5  | EMP-1004  |                 | Marketing   | 85000   | 2022-01-10 | bob.jones@company.com        | EMP-1001   |
+  |  6  | EMP-1005  | Carol Davis     | Accounting  | 95000   | 2021-08-15 | carol.davis@company.com      | EMP-1001   |
+  |  7  | EMP-1006  | Dave Lee        | Engineering | 310000  | 2018-05-01 | Dave.Lee@company.com         | EMP-1001   |
+  |  8  | EMP-1007  | Eve Brown       | Sales       | 38000   | 2023-02-28 | eve.brown@company.com        | EMP-1002   |
+  |  9  | EMP-1008  | Frank           | HR          | 88000   | 2022-09-15 | frank.miller@company.com     | EMP-1001   |
+  | 10  | EMP-1009  | Grace Patel     | Finance     | 102000  | 2025-13-01 | grace.patel@company.com      | EMP-1001   |
+  | 11  | EMP-1010  | Hank Wilson     | Marketing   | 35000   | 2024-04-01 | hank.wilson@company.com      | EMP-1001   |
+  | 12  | EMP-1011  | Iris Thompson   | Engineering | 115000  | 2020-07-20 | iris.thompson@company.com    | EMP-2000   |
+  | 13  | EMP-1012  | Jack Chen       | Sales       | 91000   | 2025-06-15 | jack.chen@company.com        | EMP-1002   |
+
+  For each error found, report:
+  ROW|COLUMN|RULE|VALUE
+
+  Then provide summary counts.
+
+  Return your answer in EXACTLY this format:
+
+  ERRORS:
+  <row>|<column>|<rule>|<value>
+  ...
+
+  SUMMARY:
+  TOTAL_ERRORS: <count>
+  ROWS_WITH_ERRORS: <count>
+  CLEAN_ROWS: <count>
+  MOST_COMMON_RULE: <rule>
+
+context:
+  validation_type: data_quality
+  reference_date: "2025-03-15"
+
+expected_output: |
+  ERRORS:
+  4|Emp ID|R1|EMP-103
+  5|Name|R2|
+  6|Dept|R3|Accounting
+  7|Salary|R4|310000
+  7|Email|R6|Dave.Lee@company.com
+  8|Salary|R4|38000
+  9|Name|R2|Frank
+  10|Start Date|R5|2025-13-01
+  11|Salary|R4|35000
+  12|Manager ID|R7|EMP-2000
+  13|Start Date|R5|2025-06-15
+
+  SUMMARY:
+  TOTAL_ERRORS: 11
+  ROWS_WITH_ERRORS: 10
+  CLEAN_ROWS: 2
+  MOST_COMMON_RULE: R4
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "4|Emp ID|R1|EMP-103"
+      - "5|Name|R2|"
+      - "6|Dept|R3|Accounting"
+      - "7|Salary|R4|310000"
+      - "7|Email|R6|Dave.Lee@company.com"
+      - "9|Name|R2|Frank"
+      - "10|Start Date|R5|2025-13-01"
+      - "11|Salary|R4|35000"
+      - "12|Manager ID|R7|EMP-2000"
+      - "13|Start Date|R5|2025-06-15"
+      - "TOTAL_ERRORS: 11"
+      - "ROWS_WITH_ERRORS: 10"
+      - "CLEAN_ROWS: 2"
+    case_sensitive: false
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "data-validation", "error-detection", "data-quality", "rules"]
+  version: "1.0"

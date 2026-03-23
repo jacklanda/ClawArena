@@ -1,0 +1,110 @@
+id: general.sql_query_result
+name: Compute SQL Query Result on Given Data
+category: general
+difficulty: hard
+description: >
+  Given explicit table contents and a complex SQL query involving joins,
+  window functions, CTEs, and aggregation, compute the exact result set.
+
+instruction: |
+  You are given the following tables with their data.  Execute the SQL
+  query mentally and return the exact result set.
+
+  Table: employees
+  | id | name     | dept_id | salary | hire_date  |
+  |----|----------|---------|--------|------------|
+  |  1 | Alice    |       1 |  95000 | 2019-03-15 |
+  |  2 | Bob      |       1 |  87000 | 2020-07-01 |
+  |  3 | Carol    |       2 | 102000 | 2018-11-20 |
+  |  4 | Dave     |       2 |  91000 | 2021-01-10 |
+  |  5 | Eve      |       3 |  78000 | 2022-05-30 |
+  |  6 | Frank    |       1 |  93000 | 2019-09-12 |
+  |  7 | Grace    |       3 |  84000 | 2020-02-28 |
+  |  8 | Heidi    |       2 |  97000 | 2019-06-01 |
+
+  Table: departments
+  | id | name        | budget  |
+  |----|-------------|---------|
+  |  1 | Engineering | 500000  |
+  |  2 | Product     | 400000  |
+  |  3 | Marketing   | 250000  |
+
+  Query:
+  ```sql
+  WITH dept_stats AS (
+      SELECT
+          d.name AS dept,
+          COUNT(*) AS headcount,
+          ROUND(AVG(e.salary), 0) AS avg_salary,
+          MAX(e.salary) AS max_salary
+      FROM employees e
+      JOIN departments d ON e.dept_id = d.id
+      GROUP BY d.name
+  ),
+  ranked AS (
+      SELECT
+          e.name AS emp,
+          d.name AS dept,
+          e.salary,
+          RANK() OVER (PARTITION BY d.name ORDER BY e.salary DESC) AS rnk
+      FROM employees e
+      JOIN departments d ON e.dept_id = d.id
+  )
+  SELECT
+      ds.dept,
+      ds.headcount,
+      ds.avg_salary,
+      r.emp AS top_earner,
+      r.salary AS top_salary
+  FROM dept_stats ds
+  JOIN ranked r ON r.dept = ds.dept AND r.rnk = 1
+  ORDER BY ds.avg_salary DESC;
+  ```
+
+  Return the result as a pipe-separated table with headers.  Use this
+  exact format — no extra whitespace or decoration:
+  dept|headcount|avg_salary|top_earner|top_salary
+  <row1>
+  <row2>
+  ...
+
+context:
+  tables:
+    employees:
+      columns: ["id", "name", "dept_id", "salary", "hire_date"]
+      rows:
+        - [1, "Alice", 1, 95000, "2019-03-15"]
+        - [2, "Bob", 1, 87000, "2020-07-01"]
+        - [3, "Carol", 2, 102000, "2018-11-20"]
+        - [4, "Dave", 2, 91000, "2021-01-10"]
+        - [5, "Eve", 3, 78000, "2022-05-30"]
+        - [6, "Frank", 1, 93000, "2019-09-12"]
+        - [7, "Grace", 3, 84000, "2020-02-28"]
+        - [8, "Heidi", 2, 97000, "2019-06-01"]
+    departments:
+      columns: ["id", "name", "budget"]
+      rows:
+        - [1, "Engineering", 500000]
+        - [2, "Product", 400000]
+        - [3, "Marketing", 250000]
+
+expected_output: |
+  dept|headcount|avg_salary|top_earner|top_salary
+  Product|3|96667|Carol|102000
+  Engineering|3|91667|Alice|95000
+  Marketing|2|81000|Grace|84000
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "Product|3|96667|Carol|102000"
+      - "Engineering|3|91667|Alice|95000"
+      - "Marketing|2|81000|Grace|84000"
+    case_sensitive: true
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["sql", "query", "joins", "window-functions", "CTE", "aggregation"]
+  version: "1.0"

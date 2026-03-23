@@ -1,0 +1,77 @@
+id: general.state_machine_trace
+name: Trace a State Machine on Input Sequence
+category: general
+difficulty: hard
+description: >
+  Given a deterministic finite automaton (DFA) and an input string, trace
+  the execution recording every state transition, and determine whether
+  the input is accepted or rejected.
+
+instruction: |
+  You are given a DFA that recognises binary strings where the number of
+  1s is divisible by 3 AND the string ends with "01".
+
+  States: {S0, S1, S2, S3, S4, S5}
+  Start state: S0
+  Accept states: {S5}
+
+  Transition table:
+  | State | Input 0 | Input 1 |
+  |-------|---------|---------|
+  |  S0   |   S3    |   S1    |
+  |  S1   |   S4    |   S2    |
+  |  S2   |   S5    |   S0    |
+  |  S3   |   S3    |   S4    |
+  |  S4   |   S3    |   S5    |
+  |  S5   |   S3    |   S1    |
+
+  Process each of the following input strings.  For each, show the state
+  trace and whether it is ACCEPTED or REJECTED.
+
+  Inputs:
+  A: 111001
+  B: 101010
+  C: 110101
+  D: 1001
+
+  Return your answer in EXACTLY this format:
+  A: S0->S1->S2->S0->S3->S3->S4 REJECTED
+  B: <trace> ACCEPTED/REJECTED
+  C: <trace> ACCEPTED/REJECTED
+  D: <trace> ACCEPTED/REJECTED
+
+context:
+  dfa:
+    states: ["S0", "S1", "S2", "S3", "S4", "S5"]
+    start: "S0"
+    accept: ["S5"]
+    transitions:
+      S0: {"0": "S3", "1": "S1"}
+      S1: {"0": "S4", "1": "S2"}
+      S2: {"0": "S5", "1": "S0"}
+      S3: {"0": "S3", "1": "S4"}
+      S4: {"0": "S3", "1": "S5"}
+      S5: {"0": "S3", "1": "S1"}
+  inputs: ["111001", "101010", "110101", "1001"]
+
+expected_output: |
+  A: S0->S1->S2->S0->S3->S3->S4 REJECTED
+  B: S0->S1->S4->S5->S3->S4->S3 REJECTED
+  C: S0->S1->S2->S5->S1->S4->S5 ACCEPTED
+  D: S0->S1->S4->S3->S4 REJECTED
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "S0->S1->S2->S0->S3->S3->S4 REJECTED"
+      - "S0->S1->S4->S5->S3->S4->S3 REJECTED"
+      - "S0->S1->S2->S5->S1->S4->S5 ACCEPTED"
+      - "S0->S1->S4->S3->S4 REJECTED"
+    case_sensitive: true
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["automata", "DFA", "state-machine", "tracing", "formal-languages"]
+  version: "1.0"

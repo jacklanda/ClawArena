@@ -1,0 +1,76 @@
+id: general.algorithm_trace
+name: Trace Dijkstra's Shortest Path Algorithm
+category: general
+difficulty: hard
+description: >
+  Given a weighted directed graph, trace Dijkstra's shortest-path algorithm
+  step by step and report the shortest distances and paths from a source
+  node to all other nodes.
+
+instruction: |
+  You are given a weighted directed graph.  Run Dijkstra's algorithm from
+  node A and compute the shortest distance from A to every other node.
+  When multiple nodes have the same tentative distance, process them in
+  alphabetical order.
+
+  Graph (directed edges with weights):
+    A -> B (weight 4)
+    A -> C (weight 2)
+    B -> C (weight 1)
+    B -> D (weight 5)
+    C -> B (weight 1)
+    C -> D (weight 8)
+    C -> E (weight 10)
+    D -> E (weight 2)
+    D -> F (weight 6)
+    E -> F (weight 3)
+    F -> G (weight 1)
+    E -> G (weight 7)
+    B -> F (weight 12)
+
+  Return your answer in EXACTLY this format (one line per node, sorted
+  alphabetically, showing shortest distance and path):
+
+  A: 0 (A)
+  B: <dist> (<path>)
+  C: <dist> (<path>)
+  ...
+
+  Where <path> uses -> to separate nodes, e.g., A->C->B
+
+context:
+  graph:
+    A: {B: 4, C: 2}
+    B: {C: 1, D: 5, F: 12}
+    C: {B: 1, D: 8, E: 10}
+    D: {E: 2, F: 6}
+    E: {F: 3, G: 7}
+    F: {G: 1}
+  source: A
+
+expected_output: |
+  A: 0 (A)
+  B: 3 (A->C->B)
+  C: 2 (A->C)
+  D: 8 (A->C->B->D)
+  E: 10 (A->C->B->D->E)
+  F: 13 (A->C->B->D->E->F)
+  G: 14 (A->C->B->D->E->F->G)
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "B: 3 (A->C->B)"
+      - "C: 2 (A->C)"
+      - "D: 8 (A->C->B->D)"
+      - "E: 10 (A->C->B->D->E)"
+      - "F: 13 (A->C->B->D->E->F)"
+      - "G: 14 (A->C->B->D->E->F->G)"
+    case_sensitive: true
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["algorithms", "dijkstra", "graph", "shortest-path", "tracing"]
+  version: "1.0"

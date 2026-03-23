@@ -1,0 +1,67 @@
+id: general.base_conversion
+name: Multi-Base Number System Conversions
+category: general
+difficulty: medium
+description: >
+  Perform a chain of number base conversions and bitwise operations,
+  returning results in specified bases.
+
+instruction: |
+  Perform the following conversions and operations in sequence.  Each
+  step builds on the previous result.
+
+  Step 1: Convert the hexadecimal number 0x1A3F to binary.
+  Step 2: Take the binary result, reverse its bits, and convert to decimal.
+  Step 3: Convert the decimal number 7531 to base-7.
+  Step 4: Compute the bitwise XOR of 0xCAFE and 0xBEEF in hexadecimal.
+  Step 5: Convert the octal number 0o7654 to decimal.
+  Step 6: What is 255 in base-16, base-8, and base-2?
+
+  Return your answers in EXACTLY this format:
+  STEP1: <binary, no prefix>
+  STEP2: <decimal>
+  STEP3: <base-7 digits>
+  STEP4: <hex, uppercase, no prefix>
+  STEP5: <decimal>
+  STEP6_HEX: <hex uppercase>
+  STEP6_OCT: <octal digits>
+  STEP6_BIN: <binary digits>
+
+context:
+  operations:
+    - {type: hex_to_bin, input: "1A3F"}
+    - {type: reverse_bits_to_dec, input: "from step 1"}
+    - {type: dec_to_base7, input: 7531}
+    - {type: xor_hex, inputs: ["CAFE", "BEEF"]}
+    - {type: oct_to_dec, input: "7654"}
+    - {type: dec_to_multi_base, input: 255}
+
+expected_output: |
+  STEP1: 0001101000111111
+  STEP2: 64600
+  STEP3: 30646
+  STEP4: 7411
+  STEP5: 4012
+  STEP6_HEX: FF
+  STEP6_OCT: 377
+  STEP6_BIN: 11111111
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "STEP1: 0001101000111111"
+      - "STEP2: 64600"
+      - "STEP3: 30646"
+      - "STEP4: 7411"
+      - "STEP5: 4012"
+      - "STEP6_HEX: FF"
+      - "STEP6_OCT: 377"
+      - "STEP6_BIN: 11111111"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["math", "number-systems", "base-conversion", "bitwise", "binary"]
+  version: "1.0"

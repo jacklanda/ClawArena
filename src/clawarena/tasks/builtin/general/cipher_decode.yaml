@@ -1,0 +1,53 @@
+id: general.cipher_decode
+name: Multi-Layer Cipher Decoding
+category: general
+difficulty: medium
+description: >
+  Decode a message that has been encoded through multiple cipher layers:
+  a Caesar shift, a character reversal, and a Rail Fence cipher.  The
+  agent must identify and undo each layer in the correct order.
+
+instruction: |
+  The following ciphertext was produced by applying three transformations
+  in this order:
+
+  Step 1: Rail Fence cipher with 3 rails (zig-zag pattern)
+  Step 2: Reverse the entire string
+  Step 3: Caesar cipher with a shift of +5 (A→F, B→G, ..., Z→E)
+
+  To decode, you must undo these steps in REVERSE order:
+  1. Undo the Caesar shift (shift by -5)
+  2. Reverse the string
+  3. Undo the Rail Fence cipher (3 rails)
+
+  Ciphertext: BFYSFYPFYIHF
+
+  Return ONLY the decoded plaintext message in uppercase letters, no
+  spaces, no punctuation, no explanation.
+
+context:
+  cipher_layers:
+    - type: rail_fence
+      rails: 3
+      order: 1
+    - type: reverse
+      order: 2
+    - type: caesar
+      shift: 5
+      order: 3
+  ciphertext: "BFYSFYPFYIHF"
+
+expected_output: "ATTACKATDAWN"
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "ATTACKATDAWN"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["cryptography", "cipher", "decoding", "multi-step"]
+  version: "1.0"

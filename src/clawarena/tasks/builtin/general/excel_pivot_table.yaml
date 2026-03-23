@@ -1,0 +1,108 @@
+id: general.excel_pivot_table
+name: Compute Pivot Table from Raw Transaction Data
+category: general
+difficulty: hard
+description: >
+  Given raw transactional data, compute a multi-dimensional pivot table
+  with row and column groupings, subtotals, grand totals, and calculated
+  fields — exactly as Excel's PivotTable feature would produce.
+
+instruction: |
+  You are given 20 rows of sales transaction data.  Build a pivot table
+  with the following configuration:
+
+  - Rows: Region (sorted alphabetically)
+  - Columns: Category (sorted alphabetically)
+  - Values: SUM of Amount
+  - Additional: Include row subtotals and a grand total row
+
+  Then compute two derived metrics for each region:
+  - Avg Transaction = Total Amount / Number of Transactions
+  - Pct of Grand Total = Region Total / Grand Total * 100 (round to 1 decimal)
+
+  Raw data:
+  | TxID | Date       | Region | Category    | Amount  |
+  |------|------------|--------|-------------|---------|
+  | T001 | 2025-01-05 | North  | Electronics | 1250.00 |
+  | T002 | 2025-01-07 | South  | Furniture   |  890.00 |
+  | T003 | 2025-01-08 | East   | Electronics | 2100.00 |
+  | T004 | 2025-01-10 | West   | Clothing    |  450.00 |
+  | T005 | 2025-01-12 | North  | Furniture   | 1100.00 |
+  | T006 | 2025-01-14 | South  | Electronics | 1800.00 |
+  | T007 | 2025-01-15 | East   | Clothing    |  670.00 |
+  | T008 | 2025-01-17 | West   | Electronics | 3200.00 |
+  | T009 | 2025-01-19 | North  | Clothing    |  520.00 |
+  | T010 | 2025-01-21 | South  | Clothing    |  380.00 |
+  | T011 | 2025-01-22 | East   | Furniture   | 1450.00 |
+  | T012 | 2025-01-24 | West   | Furniture   |  960.00 |
+  | T013 | 2025-01-25 | North  | Electronics | 2800.00 |
+  | T014 | 2025-01-27 | South  | Furniture   | 1200.00 |
+  | T015 | 2025-01-28 | East   | Electronics | 1900.00 |
+  | T016 | 2025-01-30 | West   | Clothing    |  710.00 |
+  | T017 | 2025-02-01 | North  | Furniture   |  850.00 |
+  | T018 | 2025-02-03 | South  | Electronics | 2400.00 |
+  | T019 | 2025-02-05 | East   | Clothing    |  540.00 |
+  | T020 | 2025-02-07 | West   | Electronics | 1750.00 |
+
+  Return your answer in EXACTLY this format:
+
+  PIVOT:
+  Region|Clothing|Electronics|Furniture|Total
+  East|<val>|<val>|<val>|<val>
+  North|<val>|<val>|<val>|<val>
+  South|<val>|<val>|<val>|<val>
+  West|<val>|<val>|<val>|<val>
+  Grand Total|<val>|<val>|<val>|<val>
+
+  METRICS:
+  Region|Transactions|Avg Transaction|Pct of Grand Total
+  East|<n>|<val>|<pct>%
+  North|<n>|<val>|<pct>%
+  South|<n>|<val>|<pct>%
+  West|<n>|<val>|<pct>%
+
+  Use 2 decimal places for amounts, 1 decimal for percentages.
+
+context:
+  pivot_config:
+    rows: Region
+    columns: Category
+    values: SUM(Amount)
+    sort: alphabetical
+
+expected_output: |
+  PIVOT:
+  Region|Clothing|Electronics|Furniture|Total
+  East|1210.00|4000.00|1450.00|6660.00
+  North|520.00|4050.00|1950.00|6520.00
+  South|380.00|4200.00|2090.00|6670.00
+  West|1160.00|4950.00|960.00|7070.00
+  Grand Total|3270.00|17200.00|6450.00|26920.00
+
+  METRICS:
+  Region|Transactions|Avg Transaction|Pct of Grand Total
+  East|5|1332.00|24.7%
+  North|5|1304.00|24.2%
+  South|5|1334.00|24.8%
+  West|5|1414.00|26.3%
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "East|1210.00|4000.00|1450.00|6660.00"
+      - "North|520.00|4050.00|1950.00|6520.00"
+      - "South|380.00|4200.00|2090.00|6670.00"
+      - "West|1160.00|4950.00|960.00|7070.00"
+      - "Grand Total|3270.00|17200.00|6450.00|26920.00"
+      - "East|5|1332.00|24.7%"
+      - "North|5|1304.00|24.2%"
+      - "South|5|1334.00|24.8%"
+      - "West|5|1414.00|26.3%"
+    case_sensitive: false
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "pivot-table", "aggregation", "grouping", "data-analysis"]
+  version: "1.0"

@@ -1,0 +1,106 @@
+id: general.regex_match
+name: Evaluate Regular Expression Matches
+category: general
+difficulty: medium
+description: >
+  Given a complex regular expression and a list of test strings, determine
+  which strings are full matches, partial matches, or non-matches.
+
+instruction: |
+  You are given the following Python-flavour regular expression:
+
+  ^(?:(?:\+1|1)?[-.\s]?\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$
+
+  This is intended to match US phone numbers in various formats.
+
+  For each of the following 15 test strings, determine whether the ENTIRE
+  string is matched by this regex (full match using re.fullmatch).
+  Answer with "Y" for match and "N" for no match.
+
+  Test strings:
+   1. "555-1234"
+   2. "555.1234"
+   3. "(555) 123-4567"
+   4. "1-800-555-0199"
+   5. "+1 (212) 555-0100"
+   6. "555 1234"
+   7. "5551234"
+   8. "+1-800-555-0199"
+   9. "1.800.555.0199"
+  10. "(555)555-5555"
+  11. "555-555-55555"
+  12. "+2 555 555 1234"
+  13. "800 555 0199"
+  14. "(555 123-4567"
+  15. "+1(555)5551234"
+
+  Return your answer in EXACTLY this format — one result per line:
+  1:Y
+  2:Y
+  3:Y
+  ...
+
+  No spaces, no explanation.
+
+context:
+  regex: '^(?:(?:\+1|1)?[-.\s]?\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$'
+  test_strings:
+    - "555-1234"
+    - "555.1234"
+    - "(555) 123-4567"
+    - "1-800-555-0199"
+    - "+1 (212) 555-0100"
+    - "555 1234"
+    - "5551234"
+    - "+1-800-555-0199"
+    - "1.800.555.0199"
+    - "(555)555-5555"
+    - "555-555-55555"
+    - "+2 555 555 1234"
+    - "800 555 0199"
+    - "(555 123-4567"
+    - "+1(555)5551234"
+
+expected_output: |
+  1:Y
+  2:Y
+  3:Y
+  4:Y
+  5:Y
+  6:Y
+  7:Y
+  8:Y
+  9:Y
+  10:Y
+  11:N
+  12:N
+  13:Y
+  14:Y
+  15:Y
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "1:Y"
+      - "2:Y"
+      - "3:Y"
+      - "4:Y"
+      - "5:Y"
+      - "6:Y"
+      - "7:Y"
+      - "8:Y"
+      - "9:Y"
+      - "10:Y"
+      - "11:N"
+      - "12:N"
+      - "13:Y"
+      - "14:Y"
+      - "15:Y"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["regex", "pattern-matching", "validation", "phone-numbers"]
+  version: "1.0"

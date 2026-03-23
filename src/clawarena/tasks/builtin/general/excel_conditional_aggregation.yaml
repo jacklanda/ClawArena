@@ -1,0 +1,96 @@
+id: general.excel_conditional_aggregation
+name: Excel SUMIFS, COUNTIFS, and AVERAGEIFS Evaluation
+category: general
+difficulty: medium
+description: >
+  Evaluate complex conditional aggregation formulas (SUMIFS, COUNTIFS,
+  AVERAGEIFS, MAXIFS) against a dataset, requiring the agent to apply
+  multiple filter criteria simultaneously.
+
+instruction: |
+  You are given an employee performance dataset.  Evaluate each formula
+  below and return the exact result.
+
+  Dataset (Sheet: "Performance"):
+  | Row |    A (Name)   |  B (Dept)   | C (Region) | D (Rating) | E (Salary) | F (Years) | G (Bonus%) |
+  |-----|---------------|-------------|------------|------------|------------|-----------|------------|
+  |  2  | Alice Chen    | Engineering | West       |     4.5    |   125000   |     8     |   15       |
+  |  3  | Bob Martinez  | Sales       | East       |     3.8    |    92000   |     5     |   12       |
+  |  4  | Carol Johnson | Engineering | East       |     4.2    |   118000   |     6     |   14       |
+  |  5  | Dave Kim      | Marketing   | West       |     3.5    |    85000   |     3     |   10       |
+  |  6  | Eve Brown     | Sales       | North      |     4.8    |    98000   |     7     |   18       |
+  |  7  | Frank Lee     | Engineering | North      |     3.9    |   110000   |     4     |   11       |
+  |  8  | Grace Patel   | Marketing   | East       |     4.1    |    88000   |     5     |   13       |
+  |  9  | Hank Wilson   | Sales       | West       |     3.2    |    78000   |     2     |    8       |
+  | 10  | Iris Davis    | Engineering | South      |     4.7    |   132000   |    10     |   17       |
+  | 11  | Jack Thompson | Marketing   | South      |     3.6    |    82000   |     4     |    9       |
+  | 12  | Karen White   | Sales       | South      |     4.0    |    95000   |     6     |   12       |
+  | 13  | Leo Garcia    | Engineering | West       |     4.3    |   115000   |     7     |   14       |
+
+  Formulas to evaluate:
+  F1: =SUMIFS(E2:E13, B2:B13, "Engineering")
+  F2: =SUMIFS(E2:E13, B2:B13, "Sales", D2:D13, ">="&4)
+  F3: =COUNTIFS(B2:B13, "Engineering", C2:C13, "West")
+  F4: =COUNTIFS(D2:D13, ">="&4, F2:F13, ">="&5)
+  F5: =AVERAGEIFS(E2:E13, B2:B13, "Marketing")
+  F6: =AVERAGEIFS(D2:D13, C2:C13, "East")
+  F7: =SUMIFS(E2:E13, D2:D13, ">="&4, D2:D13, "<"&4.5)
+  F8: =SUMPRODUCT((B2:B13="Sales")*(D2:D13>=3.5)*(E2:E13))
+  F9: =SUMPRODUCT((F2:F13>=5)*(G2:G13>=12)*(E2:E13))
+  F10: =SUMIFS(E2:E13, B2:B13, "<>"&"Engineering", D2:D13, ">="&3.5)
+  F11: =COUNTIFS(C2:C13, "West") + COUNTIFS(C2:C13, "East")
+  F12: =SUMPRODUCT((B2:B13="Engineering")*(E2:E13)*(G2:G13/100))
+
+  Return your answer in EXACTLY this format:
+  F1: <value>
+  F2: <value>
+  ...
+  F12: <value>
+
+  Round to 2 decimal places where applicable.  Integers should have no
+  decimal places.
+
+context:
+  functions_used:
+    - SUMIFS
+    - COUNTIFS
+    - AVERAGEIFS
+    - SUMPRODUCT
+
+expected_output: |
+  F1: 600000
+  F2: 193000
+  F3: 2
+  F4: 7
+  F5: 85000.00
+  F6: 4.03
+  F7: 416000
+  F8: 285000
+  F9: 863000
+  F10: 540000
+  F11: 7
+  F12: 85910.00
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "F1: 600000"
+      - "F2: 193000"
+      - "F3: 2"
+      - "F4: 7"
+      - "F5: 85000"
+      - "F6: 4.03"
+      - "F7: 416000"
+      - "F8: 285000"
+      - "F9: 863000"
+      - "F10: 540000"
+      - "F11: 7"
+      - "F12: 85910"
+    case_sensitive: false
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "SUMIFS", "COUNTIFS", "AVERAGEIFS", "SUMPRODUCT", "conditional"]
+  version: "1.0"

@@ -1,0 +1,111 @@
+id: general.excel_array_formulas
+name: Evaluate Complex Array and Lookup Formula Chains
+category: general
+difficulty: hard
+description: >
+  Evaluate a set of advanced Excel formulas including nested INDEX-MATCH,
+  XLOOKUP with wildcards, TEXTJOIN with conditions, and dynamic array
+  spill formulas against a multi-table dataset.
+
+instruction: |
+  You are given two data tables.  Evaluate each formula and return the
+  exact result.
+
+  === Table: "Inventory" (Sheet1, range A1:F11) ===
+  |     |     A (SKU)    |    B (Name)       | C (Category)  | D (Price) | E (Stock) | F (Supplier) |
+  |-----|---------------|-------------------|---------------|-----------|-----------|--------------|
+  |  1  | SKU           | Name              | Category      | Price     | Stock     | Supplier     |
+  |  2  | SKU-001       | Laptop Pro 15     | Electronics   |   1299.99 |       45  | TechDist     |
+  |  3  | SKU-002       | Wireless Mouse    | Electronics   |     29.99 |      200  | TechDist     |
+  |  4  | SKU-003       | Office Chair      | Furniture     |    449.99 |       30  | FurnCo       |
+  |  5  | SKU-004       | Standing Desk     | Furniture     |    699.99 |       18  | FurnCo       |
+  |  6  | SKU-005       | USB-C Hub         | Electronics   |     59.99 |      150  | TechDist     |
+  |  7  | SKU-006       | Monitor 27"       | Electronics   |    399.99 |       60  | DisplayPro   |
+  |  8  | SKU-007       | Keyboard Mech     | Electronics   |     89.99 |      120  | TechDist     |
+  |  9  | SKU-008       | Filing Cabinet    | Furniture     |    199.99 |       25  | FurnCo       |
+  | 10  | SKU-009       | Webcam HD         | Electronics   |     79.99 |       85  | DisplayPro   |
+  | 11  | SKU-010       | Bookshelf         | Furniture     |    259.99 |       12  | FurnCo       |
+
+  === Table: "Orders" (Sheet2, range A1:E9) ===
+  |     |  A (OrderID)  | B (SKU)   | C (Qty)  | D (Discount%) | E (Date)   |
+  |-----|---------------|-----------|----------|---------------|------------|
+  |  1  | OrderID       | SKU       | Qty      | Discount      | Date       |
+  |  2  | ORD-201       | SKU-001   |    2     |     5         | 2025-03-01 |
+  |  3  | ORD-202       | SKU-003   |    5     |    10         | 2025-03-03 |
+  |  4  | ORD-203       | SKU-007   |   10     |    15         | 2025-03-05 |
+  |  5  | ORD-204       | SKU-002   |   25     |     0         | 2025-03-07 |
+  |  6  | ORD-205       | SKU-005   |    3     |     5         | 2025-03-10 |
+  |  7  | ORD-206       | SKU-010   |    2     |     0         | 2025-03-12 |
+  |  8  | ORD-207       | SKU-006   |    4     |    10         | 2025-03-15 |
+  |  9  | ORD-208       | SKU-001   |    1     |     0         | 2025-03-18 |
+
+  Formulas to evaluate:
+
+  F1: =INDEX(Inventory!B2:B11,MATCH("SKU-006",Inventory!A2:A11,0))
+  F2: =SUMPRODUCT((Inventory!C2:C11="Electronics")*(Inventory!D2:D11)*(Inventory!E2:E11))
+  F3: =INDEX(Inventory!B2:B11,MATCH(MAX(Inventory!D2:D11),Inventory!D2:D11,0))
+  F4: =SUMPRODUCT(INDEX(Inventory!D2:D11,MATCH(Orders!B2:B9,Inventory!A2:A11,0))*Orders!C2:C9*(1-Orders!D2:D9/100))
+  F5: =SUMPRODUCT((Inventory!F2:F11="TechDist")*(Inventory!E2:E11>100)*(Inventory!D2:D11))
+  F6: =SUMPRODUCT((Inventory!C2:C11="Furniture")*(Inventory!D2:D11)*(Inventory!E2:E11))
+  F7: =COUNTIFS(Inventory!C2:C11,"Electronics",Inventory!E2:E11,"<"&100)
+  F8: The total revenue of all orders (Qty * Price * (1 - Discount%/100)) where Price is looked up from Inventory by SKU. (Same as F4, just confirming.)
+  F9: =SUMPRODUCT((Inventory!C2:C11="Electronics")*(Inventory!E2:E11))
+  F10: =INDEX(Inventory!A2:A11,MATCH(MIN(IF(Inventory!C2:C11="Furniture",Inventory!E2:E11)),IF(Inventory!C2:C11="Furniture",Inventory!E2:E11),0))
+
+  Return your answer in EXACTLY this format:
+  F1: <value>
+  F2: <value>
+  F3: <value>
+  F4: <value>
+  F5: <value>
+  F6: <value>
+  F7: <value>
+  F8: <value>
+  F9: <value>
+  F10: <value>
+
+  Round monetary values to 2 decimal places.
+
+context:
+  functions_used:
+    - INDEX
+    - MATCH
+    - SUMPRODUCT
+    - MAX
+    - MIN
+    - IF
+    - COUNTIFS
+
+expected_output: |
+  F1: Monitor 27"
+  F2: 115093.40
+  F3: Laptop Pro 15
+  F4: 9440.51
+  F5: 179.97
+  F6: 34219.15
+  F7: 3
+  F8: 9440.51
+  F9: 660
+  F10: SKU-010
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "F1: Monitor 27"
+      - "F2: 115093.40"
+      - "F3: Laptop Pro 15"
+      - "F4: 9440.51"
+      - "F5: 179.97"
+      - "F6: 34219.15"
+      - "F7: 3"
+      - "F8: 9440.51"
+      - "F9: 660"
+      - "F10: SKU-010"
+    case_sensitive: false
+
+timeout_seconds: 300
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "INDEX-MATCH", "SUMPRODUCT", "array-formulas", "lookup", "advanced"]
+  version: "1.0"

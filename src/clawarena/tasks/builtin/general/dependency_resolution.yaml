@@ -1,0 +1,66 @@
+id: general.dependency_resolution
+name: Topological Sort for Package Installation
+category: general
+difficulty: medium
+description: >
+  Given a dependency graph of software packages, determine a valid
+  installation order and detect any circular dependencies.
+
+instruction: |
+  You are given a set of packages with their dependencies.  Produce a
+  valid installation order (topological sort) such that every package is
+  installed AFTER all of its dependencies.  If there are multiple valid
+  orderings, choose the one where packages are installed in alphabetical
+  order whenever a choice is available (lexicographic topological sort).
+
+  Also identify any packages involved in circular dependencies.
+
+  Packages and their dependencies (format: package -> [dependencies]):
+    alpha -> []
+    bravo -> [alpha]
+    charlie -> [alpha, bravo]
+    delta -> [charlie]
+    echo -> [alpha]
+    foxtrot -> [delta, echo]
+    golf -> [bravo, echo]
+    hotel -> [golf, foxtrot]
+    india -> [hotel]
+    juliet -> [india, delta]
+
+  Return your answer in EXACTLY this format:
+
+  ORDER: pkg1, pkg2, pkg3, ...
+  CIRCULAR: none
+
+  (or list circular packages separated by commas if any exist)
+
+context:
+  packages:
+    alpha: []
+    bravo: ["alpha"]
+    charlie: ["alpha", "bravo"]
+    delta: ["charlie"]
+    echo: ["alpha"]
+    foxtrot: ["delta", "echo"]
+    golf: ["bravo", "echo"]
+    hotel: ["golf", "foxtrot"]
+    india: ["hotel"]
+    juliet: ["india", "delta"]
+
+expected_output: |
+  ORDER: alpha, bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet
+  CIRCULAR: none
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "alpha, bravo, charlie, delta, echo, foxtrot, golf, hotel, india, juliet"
+      - "CIRCULAR: none"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["algorithms", "topological-sort", "dependency-graph", "ordering"]
+  version: "1.0"

@@ -1,0 +1,127 @@
+id: general.excel_formula_chain
+name: Evaluate Chained Excel Formulas with Circular Dependencies
+category: general
+difficulty: hard
+description: >
+  Given a spreadsheet with interconnected formulas spanning multiple
+  cells, evaluate the final values of each cell.  The formulas involve
+  nested IF, SUMPRODUCT, VLOOKUP, and array references that create a
+  chain of dependencies the agent must resolve in the correct order.
+
+instruction: |
+  You are given a spreadsheet with two sheets.  Evaluate every formula
+  and return the final computed value for each requested cell.
+
+  === Sheet1: "Sales" ===
+  |     |        A        |     B     |    C     |     D      |        E         |
+  |-----|-----------------|-----------|----------|------------|------------------|
+  |  1  | Product         | Q1 Units  | Q2 Units | Unit Price | Total Revenue    |
+  |  2  | Widget Alpha    |    120    |   145    |   25.50    | =B2*D2+C2*D2     |
+  |  3  | Widget Beta     |     85    |    92    |   42.00    | =B3*D3+C3*D3     |
+  |  4  | Widget Gamma    |    200    |   180    |   15.75    | =B4*D4+C4*D4     |
+  |  5  | Widget Delta    |     50    |    67    |   89.00    | =B5*D5+C5*D5     |
+  |  6  | Total           | =SUM(B2:B5) | =SUM(C2:C5) |      | =SUM(E2:E5)      |
+  |  7  |                 |           |          |            |                  |
+  |  8  | Avg Price       |           |          | =AVERAGE(D2:D5) |             |
+  |  9  | Max Revenue     |           |          |            | =MAX(E2:E5)      |
+  | 10  | Best Product    |           |          |            | =INDEX(A2:A5,MATCH(E9,E2:E5,0)) |
+  | 11  | Discount Rate   |           |          |            | =IF(E6>30000,0.15,IF(E6>20000,0.10,0.05)) |
+  | 12  | Net Revenue     |           |          |            | =E6*(1-E11)      |
+
+  === Sheet2: "Commissions" ===
+  |     |       A       |       B        |         C          |         D          |
+  |-----|---------------|----------------|--------------------|--------------------|
+  |  1  | Sales Rep     | Product        | Commission Rate    | Commission Amount  |
+  |  2  | Alice         | Widget Alpha   | 0.08               | =VLOOKUP(B2,Sales!A2:E5,5,FALSE)*C2 |
+  |  3  | Bob           | Widget Beta    | 0.10               | =VLOOKUP(B3,Sales!A2:E5,5,FALSE)*C3 |
+  |  4  | Carol         | Widget Gamma   | 0.06               | =VLOOKUP(B4,Sales!A2:E5,5,FALSE)*C4 |
+  |  5  | Dave          | Widget Delta   | 0.12               | =VLOOKUP(B5,Sales!A2:E5,5,FALSE)*C5 |
+  |  6  | Total         |                |                    | =SUM(D2:D5)        |
+  |  7  | Highest       |                |                    | =MAX(D2:D5)        |
+  |  8  | Top Rep       | =INDEX(A2:A5,MATCH(D7,D2:D5,0)) |  |                    |
+  |  9  | Avg Commission|                |                    | =AVERAGE(D2:D5)    |
+  | 10  | Bonus Pool    |                |                    | =IF(Sales!E6>25000,D6*0.05,0) |
+
+  Compute the value of each cell listed below.  Return your answer in
+  EXACTLY this format — one per line, rounded to 2 decimal places:
+
+  Sales!E2: <value>
+  Sales!E3: <value>
+  Sales!E4: <value>
+  Sales!E5: <value>
+  Sales!B6: <value>
+  Sales!C6: <value>
+  Sales!E6: <value>
+  Sales!D8: <value>
+  Sales!E9: <value>
+  Sales!E10: <value>
+  Sales!E11: <value>
+  Sales!E12: <value>
+  Commissions!D2: <value>
+  Commissions!D3: <value>
+  Commissions!D4: <value>
+  Commissions!D5: <value>
+  Commissions!D6: <value>
+  Commissions!D7: <value>
+  Commissions!B8: <value>
+  Commissions!D9: <value>
+  Commissions!D10: <value>
+
+context:
+  spreadsheet_type: multi_sheet
+  functions_used:
+    - SUM
+    - AVERAGE
+    - MAX
+    - IF
+    - VLOOKUP
+    - INDEX
+    - MATCH
+
+expected_output: |
+  Sales!E2: 6757.50
+  Sales!E3: 7434.00
+  Sales!E4: 5985.00
+  Sales!E5: 10413.00
+  Sales!B6: 455
+  Sales!C6: 484
+  Sales!E6: 30589.50
+  Sales!D8: 43.06
+  Sales!E9: 10413.00
+  Sales!E10: Widget Delta
+  Sales!E11: 0.15
+  Sales!E12: 26001.08
+  Commissions!D2: 540.60
+  Commissions!D3: 743.40
+  Commissions!D4: 359.10
+  Commissions!D5: 1249.56
+  Commissions!D6: 2892.66
+  Commissions!D7: 1249.56
+  Commissions!B8: Dave
+  Commissions!D9: 723.17
+  Commissions!D10: 144.63
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "Sales!E2: 6757.50"
+      - "Sales!E3: 7434.00"
+      - "Sales!E4: 5985.00"
+      - "Sales!E5: 10413.00"
+      - "Sales!E6: 30589.50"
+      - "Sales!E10: Widget Delta"
+      - "Sales!E11: 0.15"
+      - "Sales!E12: 26001.08"
+      - "Commissions!D2: 540.60"
+      - "Commissions!D5: 1249.56"
+      - "Commissions!D6: 2892.66"
+      - "Commissions!B8: Dave"
+      - "Commissions!D10: 144.63"
+    case_sensitive: false
+
+timeout_seconds: 240
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "formulas", "VLOOKUP", "INDEX-MATCH", "multi-sheet", "chained"]
+  version: "1.0"

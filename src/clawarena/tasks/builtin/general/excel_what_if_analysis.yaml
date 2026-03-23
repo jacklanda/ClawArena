@@ -1,0 +1,132 @@
+id: general.excel_what_if_analysis
+name: Excel What-If Scenario and Goal Seek Analysis
+category: general
+difficulty: hard
+description: >
+  Given a pricing model with multiple interdependent variables, perform
+  scenario analysis (best/base/worst case) and goal-seek calculations
+  to find break-even and target values.
+
+instruction: |
+  You are given a product pricing model.  Perform the analysis described
+  below.
+
+  === Base Pricing Model ===
+  Product: CloudSync Pro (annual subscription)
+  Base Price:              $120/user/year
+  Variable Cost per User:  $35/user/year
+  Fixed Costs:             $500,000/year
+  Current Subscribers:     8,000 users
+  Churn Rate:              15% per year
+  New Customer Growth:     25% of current base per year
+  Price Elasticity:        For every 10% price increase, new growth drops by 8%
+
+  === Part 1: Compute Base Case (Year 1) ===
+  - Churned Users = Current * Churn Rate
+  - New Users = Current * Growth Rate
+  - End Users = Current - Churned + New
+  - Revenue = End Users * Price
+  - Variable Costs = End Users * Variable Cost per User
+  - Contribution Margin = Revenue - Variable Costs
+  - Operating Profit = Contribution Margin - Fixed Costs
+  - Profit Margin % = Operating Profit / Revenue * 100
+
+  === Part 2: Three Scenarios (Year 1) ===
+  Apply these adjustments to the base case:
+
+  Best Case: Price +10%, Growth +5pp (30%), Churn -3pp (12%)
+  Worst Case: Price -10%, Growth -5pp (20%), Churn +5pp (20%)
+
+  Remember: Price elasticity applies to the Best/Worst cases.
+  - Best Case: price +10% → new growth modifier = 1 - 0.08 = 0.92,
+    so effective growth = 30% * 0.92 = 27.6%
+  - Worst Case: price -10% → new growth modifier = 1 + 0.08 = 1.08,
+    so effective growth = 20% * 1.08 = 21.6%
+
+  === Part 3: Goal Seek ===
+  In the base case model (without price elasticity), find the minimum
+  price per user (to nearest cent) needed to achieve exactly $500,000
+  in Operating Profit with all other base assumptions held constant.
+  (Solve: End_Users * Price - End_Users * 35 - 500000 = 500000)
+
+  Return your answer in EXACTLY this format:
+
+  BASE_CASE:
+  Churned: <value>
+  New: <value>
+  End_Users: <value>
+  Revenue: <value>
+  Variable_Costs: <value>
+  Contribution_Margin: <value>
+  Operating_Profit: <value>
+  Profit_Margin: <value>%
+
+  BEST_CASE:
+  End_Users: <value>
+  Revenue: <value>
+  Operating_Profit: <value>
+
+  WORST_CASE:
+  End_Users: <value>
+  Revenue: <value>
+  Operating_Profit: <value>
+
+  GOAL_SEEK:
+  Target_Price: <value>
+
+  Round users to nearest integer, monetary values to nearest whole
+  number, margin to 1 decimal, goal seek price to 2 decimals.
+
+context:
+  model_type: pricing_scenario
+  base_price: 120
+  variable_cost: 35
+  fixed_costs: 500000
+  current_users: 8000
+
+expected_output: |
+  BASE_CASE:
+  Churned: 1200
+  New: 2000
+  End_Users: 8800
+  Revenue: 1056000
+  Variable_Costs: 308000
+  Contribution_Margin: 748000
+  Operating_Profit: 248000
+  Profit_Margin: 23.5%
+
+  BEST_CASE:
+  End_Users: 9248
+  Revenue: 1220736
+  Operating_Profit: 397056
+
+  WORST_CASE:
+  End_Users: 8128
+  Revenue: 877824
+  Operating_Profit: 93344
+
+  GOAL_SEEK:
+  Target_Price: 148.64
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "Churned: 1200"
+      - "New: 2000"
+      - "End_Users: 8800"
+      - "Revenue: 1056000"
+      - "Operating_Profit: 248000"
+      - "Profit_Margin: 23.5%"
+      - "End_Users: 9248"
+      - "Operating_Profit: 397056"
+      - "End_Users: 8128"
+      - "Operating_Profit: 93344"
+      - "Target_Price: 148.64"
+    case_sensitive: false
+
+timeout_seconds: 300
+execution_mode: sandboxed
+metadata:
+  tags: ["excel", "what-if", "scenario-analysis", "goal-seek", "pricing", "financial"]
+  version: "1.0"

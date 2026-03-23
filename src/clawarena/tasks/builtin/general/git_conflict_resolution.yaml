@@ -1,0 +1,116 @@
+id: general.git_conflict_resolution
+name: Resolve Git Merge Conflicts
+category: general
+difficulty: hard
+description: >
+  Given a file with multiple git merge conflict markers, resolve each
+  conflict according to specified resolution rules and produce the final
+  merged file content.
+
+instruction: |
+  The following Python file has 4 merge conflict regions from merging
+  branch "feature/auth-v2" into "main".  Resolve each conflict following
+  the rules below and return the COMPLETE final file content.
+
+  Resolution rules:
+  1. For import statements: keep BOTH sides, deduplicate, sort alphabetically
+  2. For function signatures: prefer the feature branch (>>>>>>> side)
+  3. For function bodies: combine logic from both sides — main's validation
+     FIRST, then feature's new logic
+  4. For constants/config: prefer the higher/newer value
+
+  File with conflicts:
+  ```
+  <<<<<<< HEAD
+  import hashlib
+  import logging
+  from datetime import datetime
+  =======
+  import hashlib
+  import jwt
+  import logging
+  from datetime import datetime, timedelta
+  >>>>>>> feature/auth-v2
+
+  MAX_RETRIES = 3
+  <<<<<<< HEAD
+  SESSION_TIMEOUT = 3600
+  =======
+  SESSION_TIMEOUT = 7200
+  >>>>>>> feature/auth-v2
+  TOKEN_ALGO = "HS256"
+
+  <<<<<<< HEAD
+  def authenticate(username, password):
+  =======
+  def authenticate(username, password, mfa_code=None):
+  >>>>>>> feature/auth-v2
+  <<<<<<< HEAD
+      if not username or not password:
+          raise ValueError("Credentials required")
+      hashed = hashlib.sha256(password.encode()).hexdigest()
+      logging.info(f"Auth attempt for {username}")
+      return {"user": username, "hash": hashed, "ts": datetime.now()}
+  =======
+      hashed = hashlib.sha256(password.encode()).hexdigest()
+      token = jwt.encode(
+          {"sub": username, "exp": datetime.now() + timedelta(hours=2)},
+          "secret",
+          algorithm=TOKEN_ALGO,
+      )
+      logging.info(f"Auth attempt for {username} with token")
+      return {"user": username, "token": token, "ts": datetime.now()}
+  >>>>>>> feature/auth-v2
+  ```
+
+  Return ONLY the resolved file content — no conflict markers, no
+  explanation, no code fences.
+
+context:
+  branches:
+    ours: main
+    theirs: feature/auth-v2
+  conflict_count: 4
+
+expected_output: |
+  import hashlib
+  import jwt
+  import logging
+  from datetime import datetime, timedelta
+
+  MAX_RETRIES = 3
+  SESSION_TIMEOUT = 7200
+  TOKEN_ALGO = "HS256"
+
+  def authenticate(username, password, mfa_code=None):
+      if not username or not password:
+          raise ValueError("Credentials required")
+      hashed = hashlib.sha256(password.encode()).hexdigest()
+      token = jwt.encode(
+          {"sub": username, "exp": datetime.now() + timedelta(hours=2)},
+          "secret",
+          algorithm=TOKEN_ALGO,
+      )
+      logging.info(f"Auth attempt for {username} with token")
+      return {"user": username, "token": token, "ts": datetime.now()}
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "import hashlib"
+      - "import jwt"
+      - "import logging"
+      - "from datetime import datetime, timedelta"
+      - "SESSION_TIMEOUT = 7200"
+      - "def authenticate(username, password, mfa_code=None):"
+      - "raise ValueError"
+      - "jwt.encode"
+      - '"token": token'
+    case_sensitive: true
+
+timeout_seconds: 150
+execution_mode: sandboxed
+metadata:
+  tags: ["git", "merge-conflict", "code", "resolution", "python"]
+  version: "1.0"

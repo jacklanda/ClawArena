@@ -1,0 +1,75 @@
+id: general.math_word_problem
+name: Multi-Step Mathematical Word Problem
+category: general
+difficulty: medium
+description: >
+  A multi-step word problem involving rates, mixtures, and optimization
+  that requires careful algebraic reasoning and unit tracking.
+
+instruction: |
+  Solve the following problem step by step.  Return ONLY the final
+  numerical answers in the exact format specified at the end.
+
+  A water treatment plant has three intake pipes (A, B, C) and two
+  discharge pipes (D, E) connected to a 10,000 litre tank.
+
+  - Pipe A fills at 250 litres/hour
+  - Pipe B fills at 400 litres/hour
+  - Pipe C fills at 150 litres/hour
+  - Pipe D drains at 300 litres/hour
+  - Pipe E drains at 200 litres/hour
+
+  The tank starts empty.  Operations proceed as follows:
+
+  Phase 1: Only pipes A and B are opened.  They run until the tank
+  reaches exactly 3,250 litres.  How long does Phase 1 take?
+
+  Phase 2: At the end of Phase 1, pipe C is also opened, AND pipe D is
+  opened.  All four pipes (A, B, C, D) run simultaneously until the tank
+  reaches 6,000 litres.  How long does Phase 2 take?
+
+  Phase 3: At the end of Phase 2, pipe E is also opened (so all 5 pipes
+  are running: A, B, C filling and D, E draining).  How long until the
+  tank is completely full (10,000 litres)?
+
+  What is the total time from start to full tank?
+
+  Return your answer in this EXACT format:
+  PHASE1_HOURS: <value>
+  PHASE2_HOURS: <value>
+  PHASE3_HOURS: <value>
+  TOTAL_HOURS: <value>
+
+  Give answers as exact decimals or fractions (e.g., 5.5 or 13.3333).
+  Round to 4 decimal places if needed.
+
+context:
+  tank_capacity: 10000
+  pipes:
+    A: {type: fill, rate: 250}
+    B: {type: fill, rate: 400}
+    C: {type: fill, rate: 150}
+    D: {type: drain, rate: 300}
+    E: {type: drain, rate: 200}
+
+expected_output: |
+  PHASE1_HOURS: 5
+  PHASE2_HOURS: 5.5
+  PHASE3_HOURS: 13.3333
+  TOTAL_HOURS: 23.8333
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "PHASE1_HOURS: 5"
+      - "PHASE2_HOURS: 5.5"
+      - "PHASE3_HOURS: 13.3333"
+      - "TOTAL_HOURS: 23.8333"
+    case_sensitive: false
+
+timeout_seconds: 120
+execution_mode: sandboxed
+metadata:
+  tags: ["math", "word-problem", "rates", "multi-step", "algebra"]
+  version: "1.0"

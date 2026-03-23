@@ -1,0 +1,70 @@
+id: general.logic_grid_puzzle
+name: Solve a Logic Grid Puzzle
+category: general
+difficulty: hard
+description: >
+  A classic logic grid deduction puzzle with five people, five houses, and
+  five pets.  The agent must use constraint propagation and elimination to
+  arrive at the unique solution.
+
+instruction: |
+  Five neighbours live in a row of houses numbered 1 through 5 from left
+  to right.  Each person has a different favourite colour and owns a
+  different pet.  Use the clues below to determine who lives where, their
+  favourite colour, and their pet.
+
+  People: Alice, Bob, Carol, Dave, Eve
+  Colours: Red, Blue, Green, Yellow, White
+  Pets: Cat, Dog, Fish, Parrot, Turtle
+
+  Clues:
+  1. Alice lives in the first house.
+  2. The person who likes Blue lives next to the person with a Parrot.
+  3. Bob lives in the house immediately to the right of Carol.
+  4. The person in house 3 likes Green.
+  5. Dave owns a Fish.
+  6. Eve likes Yellow.
+  7. The Turtle owner lives in house 2.
+  8. Carol does not like Red.
+  9. The person who likes White lives somewhere to the left of Dave.
+  10. Bob owns a Dog.
+  11. Eve lives in house 4.
+  12. Alice likes Red.
+
+  Answer with EXACTLY this format — one line per house, no extra text:
+  1: <Name>, <Colour>, <Pet>
+  2: <Name>, <Colour>, <Pet>
+  3: <Name>, <Colour>, <Pet>
+  4: <Name>, <Colour>, <Pet>
+  5: <Name>, <Colour>, <Pet>
+
+context:
+  puzzle_type: logic_grid
+  entities:
+    people: ["Alice", "Bob", "Carol", "Dave", "Eve"]
+    colours: ["Red", "Blue", "Green", "Yellow", "White"]
+    pets: ["Cat", "Dog", "Fish", "Parrot", "Turtle"]
+
+expected_output: |
+  1: Alice, Red, Cat
+  2: Carol, White, Turtle
+  3: Bob, Green, Dog
+  4: Eve, Yellow, Parrot
+  5: Dave, Blue, Fish
+
+evaluation:
+  evaluator: exact_match
+  config:
+    contains:
+      - "Alice, Red, Cat"
+      - "Carol, White, Turtle"
+      - "Bob, Green, Dog"
+      - "Eve, Yellow, Parrot"
+      - "Dave, Blue, Fish"
+    case_sensitive: true
+
+timeout_seconds: 180
+execution_mode: sandboxed
+metadata:
+  tags: ["logic", "puzzle", "deduction", "constraint-satisfaction"]
+  version: "1.0"

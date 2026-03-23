@@ -12,7 +12,7 @@ def test_load_builtin_tasks():
     if not BUILTIN_DIR.is_dir():
         pytest.skip("Built-in task directory not found")
     tasks = load_tasks_from_directory(BUILTIN_DIR)
-    assert len(tasks) == 10
+    assert len(tasks) == 31
 
 
 def test_load_single_task():
@@ -35,7 +35,7 @@ def test_registry():
 
     registry = TaskRegistry()
     tasks = registry.list_all()
-    assert len(tasks) == 10
+    assert len(tasks) == 31
 
     email_tasks = registry.filter_by_category(
         __import__("clawarena.core.task", fromlist=["TaskCategory"]).TaskCategory.EMAIL
@@ -43,4 +43,4 @@ def test_registry():
     assert len(email_tasks) == 3
 
     suite = registry.as_suite("test")
-    assert len(suite) == 10
+    assert len(suite) == 31
