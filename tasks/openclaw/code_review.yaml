@@ -73,19 +73,20 @@ expected_output: |
 
 evaluation:
   evaluator: rubric
-  criteria:
-    - name: bug_identification
-      weight: 0.3
-      description: "Correctly identifies bugs and potential issues"
-    - name: optimization_suggestions
-      weight: 0.25
-      description: "Provides meaningful performance optimizations"
-    - name: code_quality
-      weight: 0.25
-      description: "Improves code readability, maintainability, and style"
-    - name: completeness
-      weight: 0.2
-      description: "Covers all requested aspects of the review"
+  config:
+    criteria:
+      - name: bug_identification
+        weight: 0.3
+        description: "Correctly identifies bugs and potential issues"
+      - name: optimization_suggestions
+        weight: 0.25
+        description: "Provides meaningful performance optimizations"
+      - name: code_quality
+        weight: 0.25
+        description: "Improves code readability, maintainability, and style"
+      - name: completeness
+        weight: 0.2
+        description: "Covers all requested aspects of the review"
 
 metadata:
   tags: ["openclaw", "code_review", "python", "best_practices"]

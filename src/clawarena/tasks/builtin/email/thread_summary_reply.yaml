@@ -33,6 +33,15 @@ instruction: |
 context:
   sender_name: "Kenji Watanabe"
   sender_role: "Staff Software Engineer"
+  sender_email: "yonyonlau@gmail.com"
+  reply_all_recipients:
+    - "yangliu.real@gmail.com"
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "yonyonlau@gmail.com"
+    password_env: "GMAIL_APP_PASSWORD"
+    tls: true
   thread:
     - from: "Lisa Park"
       role: "VP of Engineering"
@@ -137,6 +146,9 @@ evaluation:
         weight: 7
         config:
           criteria:
+            - name: addressing
+              description: "Reply-All is sent from yonyonlau@gmail.com to yangliu.real@gmail.com"
+              weight: 1
             - name: summary_executive_overview
               description: "Summary includes a clear one-paragraph overview capturing the state of Project Atlas across all workstreams"
               weight: 2

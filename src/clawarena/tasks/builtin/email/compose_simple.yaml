@@ -19,8 +19,9 @@ instruction: |
 context:
   sender_name: "Jordan Rivera"
   sender_title: "Product Manager"
+  sender_email: "yonyonlau@gmail.com"
   recipient_name: "Alex Chen"
-  recipient_email: "alex.chen@acmecorp.com"
+  recipient_email: "yangliu.real@gmail.com"
   relationship: "colleague on the same team"
   subject: "Q3 Feature Prioritization Meeting"
   key_points:
@@ -28,6 +29,12 @@ context:
     - "Ask Alex to prepare the latest customer feedback summary before the meeting"
     - "Mention that the VP of Product wants the finalized list by end of week"
     - "Offer to share the draft roadmap document ahead of time"
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "yonyonlau@gmail.com"
+    password_env: "GMAIL_APP_PASSWORD"
+    tls: true
 
 expected_output: null
 
@@ -35,6 +42,9 @@ evaluation:
   evaluator: rubric
   config:
     criteria:
+      - name: addressing
+        description: "Email is addressed to yangliu.real@gmail.com and sent from yonyonlau@gmail.com"
+        weight: 2
       - name: greeting
         description: "Email opens with an appropriate professional greeting addressing Alex"
         weight: 1

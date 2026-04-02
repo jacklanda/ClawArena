@@ -106,6 +106,70 @@ clawarena results list
 clawarena leaderboard
 ```
 
+## Example: Email Task Run
+
+```
+$ python3 scripts/run_email_tasks.py
+
+────────────────────────────────────────────────────────────
+ClawArena — Email Task Run
+  Sender  : yonyonlau@gmail.com
+  Receiver: yangliu.real@gmail.com
+  Tasks   : 4
+────────────────────────────────────────────────────────────
+
+[1/4] Compose a Professional Email
+  id         : email.compose_simple
+  difficulty : easy
+  timeout    : 120s
+  agent      : OK  (in=380 out=150 tokens)
+  sending    : OK → yangliu.real@gmail.com
+  score      : 42.3%  (correctness=15  completeness=17  efficiency=80  robustness=100)
+  preview    : **Subject:** Q3 Feature Prioritization Meeting ...
+
+[2/4] Reply to an Email Thread with Context
+  id         : email.reply_with_context
+  difficulty : medium
+  timeout    : 180s
+  agent      : OK  (in=718 out=243 tokens)
+  sending    : OK → yangliu.real@gmail.com
+  score      : 42.9%  (correctness=17  completeness=17  efficiency=80  robustness=100)
+  preview    : **Subject:** Re: v2.4 Regression Test Results ...
+
+[3/4] Summarize Thread and Reply to All Open Items
+  id         : email.thread_summary_reply
+  difficulty : hard
+  timeout    : 300s
+  agent      : OK  (in=1318 out=564 tokens)
+  sending    : OK → yangliu.real@gmail.com
+  score      : 47.7%  (correctness=40  completeness=18  efficiency=50  robustness=100)
+  preview    : **Subject:** Re: Project Atlas Launch Updates ...
+
+[4/4] OpenClaw Email Composition
+  id         : openclaw_email_composition
+  difficulty : medium
+  timeout    : 300s
+  agent      : OK  (in=348 out=182 tokens)
+  sending    : OK → yangliu.real@gmail.com
+  score      : 43.5%  (correctness=35  completeness=20  efficiency=30  robustness=100)
+  preview    : **Subject:** Feedback Request: ClawArena AI Benchmarking Framework Proposal ...
+
+────────────────────────────────────────────────────────────
+RESULTS SUMMARY
+────────────────────────────────────────────────────────────
+  Emails sent : 4/4
+  Failures    : 0
+  Avg score   : 44.1%
+
+Task                                             Score   Sent
+───────────────────────────────────────────── ──────── ──────
+email.compose_simple                             42.3%      ✓
+email.reply_with_context                         42.9%      ✓
+email.thread_summary_reply                       47.7%      ✓
+openclaw_email_composition                       43.5%      ✓
+────────────────────────────────────────────────────────────
+```
+
 ## Project Structure
 
 ```
