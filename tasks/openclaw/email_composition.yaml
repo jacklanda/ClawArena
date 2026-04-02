@@ -21,11 +21,18 @@ instruction: |
   Format the email properly with subject, greeting, body, and closing.
 
 context:
-  recipient: "tech.review@company.com"
+  sender_email: "yonyonlau@gmail.com"
+  recipient: "yangliu.real@gmail.com"
   project_name: "ClawArena AI Benchmarking Framework"
   project_description: "A Python framework for evaluating AI agents on real-world tasks with multi-dimensional scoring"
   deadline: "Next Friday"
   available_times: ["Monday 2-4 PM", "Wednesday 10-12 AM", "Thursday 3-5 PM"]
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "yonyonlau@gmail.com"
+    password_env: "GMAIL_APP_PASSWORD"
+    tls: true
 
 expected_output: |
   A properly formatted email with:
@@ -38,19 +45,23 @@ expected_output: |
 
 evaluation:
   evaluator: rubric
-  criteria:
-    - name: format
-      weight: 0.2
-      description: "Email is properly formatted with all required sections"
-    - name: clarity
-      weight: 0.3
-      description: "Project description and request are clear and concise"
-    - name: professionalism
-      weight: 0.25
-      description: "Tone is professional, polite, and collaborative"
-    - name: completeness
-      weight: 0.25
-      description: "All requested elements are included (description, feedback request, meeting times)"
+  config:
+    criteria:
+      - name: addressing
+        weight: 0.2
+        description: "Email is addressed To: yangliu.real@gmail.com and From: yonyonlau@gmail.com"
+      - name: format
+        weight: 0.2
+        description: "Email is properly formatted with all required sections"
+      - name: clarity
+        weight: 0.3
+        description: "Project description and request are clear and concise"
+      - name: professionalism
+        weight: 0.25
+        description: "Tone is professional, polite, and collaborative"
+      - name: completeness
+        weight: 0.25
+        description: "All requested elements are included (description, feedback request, meeting times)"
 
 metadata:
   tags: ["openclaw", "email", "professional", "communication"]

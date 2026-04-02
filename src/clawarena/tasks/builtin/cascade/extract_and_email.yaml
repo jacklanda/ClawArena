@@ -35,11 +35,20 @@ context:
   sender:
     name: "Avery Mitchell"
     title: "Sales Analytics Lead"
+    email: "yonyonlau@gmail.com"
   recipients:
     - name: "Diana Torres"
       title: "VP of Sales"
+      email: "yangliu.real@gmail.com"
     - name: "Sam Huang"
       title: "Head of Product"
+      email: "yangliu.real@gmail.com"
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "yonyonlau@gmail.com"
+    password_env: "GMAIL_APP_PASSWORD"
+    tls: true
   previous_week_total_revenue: 142500.00
   weekly_sales_data:
     - date: "2025-03-10"
@@ -140,6 +149,9 @@ evaluation:
             - name: summary_quality
               description: "Summary is 3-4 sentences, highlights the revenue decline vs previous week, notes Enterprise Plan strength, and flags the overall drop as a concern"
               weight: 3
+            - name: email_addressing
+              description: "Email is addressed To: yangliu.real@gmail.com and sent From: yonyonlau@gmail.com"
+              weight: 2
             - name: email_format
               description: "Email is professional, includes metrics in a scannable format (table or bullets), contains the narrative summary, and suggests a concrete action item"
               weight: 3

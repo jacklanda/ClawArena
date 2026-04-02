@@ -94,22 +94,23 @@ expected_output: |
 
 evaluation:
   evaluator: rubric
-  criteria:
-    - name: content_coverage
-      weight: 0.3
-      description: "Covers all key aspects of the documentation"
-    - name: clarity
-      weight: 0.25
-      description: "Uses clear, accessible language appropriate for the audience"
-    - name: structure
-      weight: 0.2
-      description: "Well-organized with clear sections and logical flow"
-    - name: conciseness
-      weight: 0.15
-      description: "Appropriate length without unnecessary details"
-    - name: accuracy
-      weight: 0.1
-      description: "Accurately represents the original documentation"
+  config:
+    criteria:
+      - name: content_coverage
+        weight: 0.3
+        description: "Covers all key aspects of the documentation"
+      - name: clarity
+        weight: 0.25
+        description: "Uses clear, accessible language appropriate for the audience"
+      - name: structure
+        weight: 0.2
+        description: "Well-organized with clear sections and logical flow"
+      - name: conciseness
+        weight: 0.15
+        description: "Appropriate length without unnecessary details"
+      - name: accuracy
+        weight: 0.1
+        description: "Accurately represents the original documentation"
 
 metadata:
   tags: ["openclaw", "summarization", "technical", "documentation"]

@@ -22,6 +22,14 @@ instruction: |
 context:
   sender_name: "Priya Sharma"
   sender_role: "Engineering Lead"
+  sender_email: "yonyonlau@gmail.com"
+  reply_to_email: "yangliu.real@gmail.com"
+  smtp:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "yonyonlau@gmail.com"
+    password_env: "GMAIL_APP_PASSWORD"
+    tls: true
   thread:
     - from: "Marcus Thompson"
       role: "QA Lead"
@@ -69,6 +77,9 @@ evaluation:
   evaluator: rubric
   config:
     criteria:
+      - name: addressing
+        description: "Reply is sent from yonyonlau@gmail.com to yangliu.real@gmail.com"
+        weight: 1
       - name: question_coverage
         description: "All three questions directed at the sender are clearly answered or addressed"
         weight: 4
