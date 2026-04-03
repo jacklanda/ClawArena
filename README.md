@@ -27,11 +27,45 @@ ClawArena is a Python framework for running AI agents against standardized task 
 
 - **YAML Task Definitions** -- Declarative task specs validated with Pydantic
 - **Task Registry** -- Central discovery with filtering by category and difficulty
-- **10 Built-in Tasks** across four categories:
-  - **Email** -- compose_simple, reply_with_context, thread_summary_reply
-  - **Summarization** -- meeting_notes, daily_standup, multi_source
-  - **Cascade** -- extract_and_email, data_pipeline
-  - **General** -- file_organizer, schedule_planner
+- **35 Built-in Tasks** across five categories:
+
+| # | ID | Name | Category | Difficulty | Timeout | Mode |
+|---|---|---|---|---|---|---|
+| 1 | `cascade.data_pipeline` | Log Analysis to Incident Report Pipeline | cascade | hard | 360s | sandboxed |
+| 2 | `cascade.extract_and_email` | Extract Metrics, Summarize, and Compose Email | cascade | medium | 240s | sandboxed |
+| 3 | `email.compose_simple` | Compose a Professional Email | email | easy | 120s | sandboxed |
+| 4 | `email.reply_with_context` | Reply to an Email Thread with Context | email | medium | 180s | sandboxed |
+| 5 | `email.thread_summary_reply` | Summarize Thread and Reply to All Open Items | email | hard | 300s | sandboxed |
+| 6 | `openclaw_email_composition` | OpenClaw Email Composition | email | medium | 300s | sandboxed |
+| 7 | `general.algorithm_trace` | Trace Dijkstra's Shortest Path Algorithm | general | hard | 180s | sandboxed |
+| 8 | `general.base_conversion` | Multi-Base Number System Conversions | general | medium | 120s | sandboxed |
+| 9 | `general.cipher_decode` | Multi-Layer Cipher Decoding | general | medium | 120s | sandboxed |
+| 10 | `general.code_output_prediction` | Predict Python Program Output | general | hard | 120s | sandboxed |
+| 11 | `general.data_extraction` | Extract Structured Data from Messy Text | general | medium | 120s | sandboxed |
+| 12 | `general.dependency_resolution` | Topological Sort for Package Installation | general | medium | 120s | sandboxed |
+| 13 | `general.excel_array_formulas` | Evaluate Complex Array and Lookup Formula Chains | general | hard | 300s | sandboxed |
+| 14 | `general.excel_conditional_aggregation` | Excel SUMIFS, COUNTIFS, and AVERAGEIFS Evaluation | general | medium | 240s | sandboxed |
+| 15 | `general.excel_cross_sheet_reconciliation` | Cross-Sheet Data Reconciliation and Discrepancy Report | general | hard | 300s | sandboxed |
+| 16 | `general.excel_data_validation` | Spreadsheet Data Validation and Error Detection | general | medium | 240s | sandboxed |
+| 17 | `general.excel_financial_model` | Build Financial Projection Model from Assumptions | general | hard | 300s | sandboxed |
+| 18 | `general.excel_formula_chain` | Evaluate Chained Excel Formulas with Circular Dependencies | general | hard | 240s | sandboxed |
+| 19 | `general.excel_pivot_table` | Compute Pivot Table from Raw Transaction Data | general | hard | 240s | sandboxed |
+| 20 | `general.excel_what_if_analysis` | Excel What-If Scenario and Goal Seek Analysis | general | hard | 300s | sandboxed |
+| 21 | `general.file_organizer` | Organize Files into Categorized Directories | general | easy | 180s | sandboxed |
+| 22 | `general.git_conflict_resolution` | Resolve Git Merge Conflicts | general | hard | 150s | sandboxed |
+| 23 | `general.json_transform` | Complex JSON Data Transformation | general | medium | 150s | sandboxed |
+| 24 | `general.logic_grid_puzzle` | Solve a Logic Grid Puzzle | general | hard | 180s | sandboxed |
+| 25 | `general.math_word_problem` | Multi-Step Mathematical Word Problem | general | medium | 120s | sandboxed |
+| 26 | `general.regex_match` | Evaluate Regular Expression Matches | general | medium | 120s | sandboxed |
+| 27 | `general.schedule_planner` | Create an Optimized Daily Schedule | general | medium | 240s | sandboxed |
+| 28 | `general.sql_query_result` | Compute SQL Query Result on Given Data | general | hard | 180s | sandboxed |
+| 29 | `general.state_machine_trace` | Trace a State Machine on Input Sequence | general | hard | 180s | sandboxed |
+| 30 | `openclaw_code_review` | OpenClaw Code Review | general | hard | 400s | sandboxed |
+| 31 | `openclaw_currency_analysis` | Currency Exchange Rate Analysis | general | hard | 600s | sandboxed |
+| 32 | `openclaw_document_summarization` | OpenClaw Document Summarization | summarization | medium | 350s | sandboxed |
+| 33 | `summarization.daily_standup` | Generate Daily Work Summary from Multiple Sources | summarization | medium | 180s | sandboxed |
+| 34 | `summarization.meeting_notes` | Summarize Meeting Transcript into Structured Notes | summarization | easy | 180s | sandboxed |
+| 35 | `summarization.multi_source` | Multi-Source Executive Summary | summarization | hard | 300s | sandboxed |
 
 ### Evaluators
 
